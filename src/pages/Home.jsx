@@ -1,8 +1,42 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { db } from '../firebase';
+import { collection, getDocs } from 'firebase/firestore';
 
 const Home = () => {
+  const [medicines, setMedicines] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchMedicines = async () => {
+      try {
+        const medicinesCollection = collection(db, 'medicine');
+        const medicineSnapshot = await getDocs(medicinesCollection);
+        
+        let medicineList = medicineSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        
+        // Randomly select 4 to 5 medicines
+        medicineList = medicineList.sort(() => 0.5 - Math.random()).slice(0, 5);
+
+        setMedicines(medicineList);
+      } catch (error) {
+        console.error("Error fetching medicines: ", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMedicines();
+  }, []);
+
+  if (loading) {
+    return <p>Loading medicines...</p>;
+  }
+
   return (
     <div className="bg-gray-100 min-h-screen">
       {/* Banner with centered search bar */}
@@ -38,8 +72,8 @@ const Home = () => {
       <section className="py-12 px-4">
         <h2 className="text-3xl text-center font-semibold mb-6 text-blue-700">Browse Medicines</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {medicines.map((medicine, index) => (
-            <MedicineCard key={index} name={medicine.name} price={medicine.price} />
+          {medicines.map((medicine) => (
+            <MedicineCard key={medicine.id} medicine={medicine} />
           ))}
         </div>
       </section>
@@ -60,31 +94,31 @@ const Home = () => {
   );
 };
 
-// Medicine Card Component
-const MedicineCard = ({ name, price }) => (
-  <div className="glassmorphism bg-white bg-opacity-80 backdrop-blur-lg rounded-lg shadow-lg p-4 flex flex-col justify-between hover:shadow-xl transition">
+// Medicine Card Component with similar design to Medicines page
+const MedicineCard = ({ medicine }) => (
+  <motion.div 
+    className="glassmorphism bg-white bg-opacity-80 backdrop-blur-lg rounded-lg shadow-lg p-[3.25rem] flex flex-col justify-between hover:shadow-xl transition"
+    whileHover={{ scale: 1.05 }}
+    transition={{ duration: 0.3 }}
+  >
     <div className="flex flex-col items-center">
       <img
-        src="/path-to-medicine-image.jpg"
-        alt={name}
-        className="w-24 h-24 mb-4"
+        src={medicine.image}
+        alt={medicine.name}
+        className="w-24 h-24 mb-4 object-cover"
       />
-      <h3 className="text-lg font-semibold text-gray-800">{name}</h3>
-      <p className="text-gray-700">₹{price}</p>
+      <h3 className="text-lg font-semibold text-gray-800">{medicine.name}</h3>
+      <h2 className="text-lg font-semibold text-gray-700">{medicine.category}</h2>
+      <p className="text-gray-700">₹{medicine.price}</p>
+      <p className={`text-${medicine.availability === 'In Stock' ? 'green' : 'red'}-600 font-semibold`}>
+        {medicine.availability}
+      </p>
     </div>
-    <Link to="/medicineDetails" className="mt-4 text-center bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 shadow-md">
+    <Link to={`/medicine-details/${medicine.id}`} className="mt-3 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 shadow-md text-center">
       View Details
     </Link>
-  </div>
+  </motion.div>
 );
-
-// Dummy data for medicines
-const medicines = [
-  { name: 'Paracetamol', price: 20 },
-  { name: 'Ibuprofen', price: 50 },
-  { name: 'Vitamin C', price: 80 },
-  { name: 'Antacid', price: 25 },
-];
 
 // Dummy data for services
 const services = [

@@ -43,7 +43,7 @@ const Medicines = () => {
 
   return (
     <div className="bg-gradient-to-b from-blue-100 to-blue-500 min-h-screen py-10 flex flex-col items-center">
-      <h1 className="text-4xl font-semibold text-center text-gray-800 mb-8">Available Medicines</h1>
+      <h1 className="text-4xl font-semibold text-center text-gray-800 mb-8">Check Out the Medicines Here!!</h1>
       
       {/* Category Tabs */}
       <div className="flex mb-8">
@@ -62,7 +62,7 @@ const Medicines = () => {
       </div>
 
       {/* Medicines Section */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
         {filteredMedicines.map(medicine => (
           <motion.div 
             key={medicine.id}
@@ -78,22 +78,35 @@ const Medicines = () => {
   );
 };
 
-// Medicine Card Component
+// Medicine Card Component with Framer Motion Hover Effect
 const MedicineCard = ({ medicine }) => (
-  <div className="glassmorphism bg-white bg-opacity-80 backdrop-blur-lg rounded-lg shadow-lg p-[3.25rem] flex flex-col justify-between hover:shadow-xl transition">
-    <div className="flex flex-col items-center">
-      <img
-        src={medicine.image}
-        alt={medicine.name}
-        className="w-24 h-24 mb-4"
-      />
-      <h3 className="text-lg font-semibold text-gray-800">{medicine.name}</h3>
-      <p className="text-gray-700">₹{medicine.price}</p>
-    </div>
-    <Link to={`/medicine-details/${medicine.id}`} className="mt-3 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 shadow-md">
+  <motion.div 
+    className="bg-white bg-opacity-90 rounded-lg shadow-lg p-6 flex flex-col justify-between items-center transition-all"
+    whileHover={{
+      scale: 1.05,
+      transition: { duration: 0.3 },
+    }}
+  >
+    <motion.img
+      src={medicine.image}
+      alt={medicine.name}
+      className="w-32 h-32 mb-4 object-cover rounded-md"
+      whileHover={{
+        scale: 1.1,
+        rotate: 5,
+        transition: { duration: 0.3 },
+      }}
+    />
+    <h3 className="text-xl font-semibold text-gray-800 mb-2">{medicine.name}</h3>
+    <h4 className="text-md font-medium text-gray-600 mb-2">{medicine.category}</h4>
+    <p className="text-lg font-medium text-gray-700 mb-1">₹{medicine.price}</p>
+    <p className={`text-md ${medicine.availability ? 'text-green-600' : 'text-red-600'} mb-3`}>
+      {medicine.availability ? 'In Stock' : 'Out of Stock'}
+    </p>
+    <Link to={`/medicine-details/${medicine.id}`} className="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 transition">
       View Details
     </Link>
-  </div>
+  </motion.div>
 );
 
 export default Medicines;
