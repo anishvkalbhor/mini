@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Login from './pages/Login'; // Login/Register page
 import Home from './pages/Home'; // Home page
 import Medicines from './pages/Medicines'; // Medicines page
+import MedicineDetails from './pages/MedicineDetails'; // Medicines page
 // import AboutPage from './components/AboutPage'; // About us page
 // import ContactPage from './components/ContactPage'; // Contact page
 
@@ -15,6 +16,7 @@ const App = () => {
         <Route path="/home" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/medicines" element={<Medicines />} />
+        <Route path="/medicine-details/:id" element={<MedicineDetails />} />
         {/* <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} /> */}
       </Routes>
