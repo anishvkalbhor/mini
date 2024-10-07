@@ -6,7 +6,7 @@ import Home from './pages/Home'; // Home page
 import Medicines from './pages/Medicines'; // Medicines page
 import MedicineDetails from './pages/MedicineDetails'; // Medicines page
 // import AboutPage from './components/AboutPage'; // About us page
-// import ContactPage from './components/ContactPage'; // Contact page
+import Contact from './pages/Contact'; // Contact page
 
 const App = () => {
   return (
@@ -17,8 +17,8 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/medicines" element={<Medicines />} />
         <Route path="/medicine-details/:id" element={<MedicineDetails />} />
-        {/* <Route path="/about" element={<AboutPage />} />
-        <Route path="/contact" element={<ContactPage />} /> */}
+        {/* <Route path="/about" element={<AboutPage />} /> */}
+        <Route path="/contact" element={<Contact />} />
       </Routes>
     </Router>
   );
