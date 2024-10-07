@@ -42,7 +42,7 @@ const Medicines = () => {
   }
 
   return (
-    <div className="bg-gradient-to-b from-blue-100 to-blue-500 min-h-screen py-10 flex flex-col items-center">
+    <div className="bg-gradient-to-b from-teal-100 to-teal-500 min-h-screen py-10 flex flex-col items-center">
       <h1 className="text-4xl font-semibold text-center text-gray-800 mb-8">Check Out the Medicines Here!!</h1>
       
       {/* Category Tabs */}
@@ -52,7 +52,7 @@ const Medicines = () => {
             key={category}
             onClick={() => setSelectedCategory(category)}
             className={`px-4 py-2 rounded-xl transition-all duration-300 mx-2 ${
-              selectedCategory === category ? 'bg-blue-600 text-white' : 'bg-white text-gray-800'
+              selectedCategory === category ? 'bg-teal-600 text-white' : 'bg-white text-gray-800'
             } shadow-lg hover:shadow-xl`}
             whileHover={{ scale: 1.05 }}
           >
@@ -103,7 +103,7 @@ const MedicineCard = ({ medicine }) => (
     <p className={`text-md ${medicine.availability ? 'text-green-600' : 'text-red-600'} mb-3`}>
       {medicine.availability ? 'In Stock' : 'Out of Stock'}
     </p>
-    <Link to={`/medicine-details/${medicine.id}`} className="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 transition">
+    <Link to={`/medicine-details/${medicine.id}`} className="bg-teal-600 text-white px-5 py-2 rounded-md hover:bg-teal-700 transition">
       View Details
     </Link>
   </motion.div>

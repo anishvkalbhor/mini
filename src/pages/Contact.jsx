@@ -42,7 +42,7 @@ const Contact = () => {
   };
 
   return (
-    <div className="container mx-auto py-12 px-4">
+    <div className="relative min-h-screen bg-gradient-to-r from-purple-400 via-blue-500 to-indigo-600 flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -134,6 +134,10 @@ const Contact = () => {
           </motion.div>
         </div>
       </motion.div>
+
+      {/* Animated Background Shapes */}
+      <div className="absolute top-0 left-0 w-96 h-96 bg-indigo-500 opacity-30 rounded-full mix-blend-multiply filter blur-2xl animate-pulse"></div>
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500 opacity-30 rounded-full mix-blend-multiply filter blur-2xl animate-pulse"></div>
     </div>
   );
 };

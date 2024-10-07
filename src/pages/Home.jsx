@@ -34,32 +34,32 @@ const Home = () => {
   }, []);
 
   if (loading) {
-    return <p>Loading medicines...</p>;
+    return <p className="text-center text-blue-600 mt-12">Loading medicines...</p>;
   }
 
   return (
-    <div className="bg-amber-50 min-h-screen">
+    <div className="bg-gradient-to-r from-blue-50 to-blue-100 min-h-screen">
       {/* Banner with centered search bar */}
       <div className="relative">
-        <div className="w-full h-72 bg-gradient-to-b from-blue-400 to-blue-300 flex items-center justify-center shadow-lg">
+        <div className="w-full h-80 bg-gradient-to-b from-blue-400 to-blue-600 flex items-center justify-center shadow-lg">
           <motion.h1
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 2 }}
-            className="absolute top-10 text-4xl font-semibold text-gray-800"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.5 }}
+            className="absolute top-12 text-4xl font-extrabold text-white"
           >
             Your Health, Our Priority
           </motion.h1>
 
-          <div className="absolute top-1/2 transform -translate-y-1/2 w-full flex justify-center">
+          <div className="absolute bottom-12 w-full flex justify-center">
             <div className="w-full max-w-xl px-4">
-              <div className="glassmorphism p-4 rounded-md shadow-2xl">
+              <div className="p-4 rounded-lg shadow-lg bg-white bg-opacity-90">
                 <input
                   type="text"
                   placeholder="Search for medicines..."
-                  className="w-full px-4 py-3 rounded-md bg-white bg-opacity-70 text-gray-800 placeholder-gray-600 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  className="w-full px-4 py-3 rounded-md bg-white bg-opacity-80 text-gray-800 placeholder-gray-600 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
-                <button className="mt-2 w-full bg-blue-500 text-white px-4 py-3 rounded-md hover:bg-blue-700 transition duration-300 shadow-md">
+                <button className="mt-4 w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300 shadow-lg">
                   Search
                 </button>
               </div>
@@ -69,9 +69,9 @@ const Home = () => {
       </div>
 
       {/* Medicines Section */}
-      <section className="py-12 px-4">
-        <h2 className="text-3xl text-center font-semibold mb-6 text-blue-700">Browse Medicines</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+      <section className="py-16 px-4">
+        <h2 className="text-3xl text-center font-bold mb-8 text-blue-700">Recommended Medicines</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
           {medicines.map((medicine) => (
             <MedicineCard key={medicine.id} medicine={medicine} />
           ))}
@@ -79,13 +79,13 @@ const Home = () => {
       </section>
 
       {/* Services Section */}
-      <section className="bg-amber-50 py-16 shadow-md">
-        <h2 className="text-3xl text-center font-semibold mb-10">Our Services</h2>
+      <section className="bg-white py-16 shadow-inner">
+        <h2 className="text-3xl text-center font-bold mb-10 text-gray-800">Our Services</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4 max-w-7xl mx-auto">
           {services.map((service, index) => (
-            <div key={index} className="bg-gray-50 rounded-lg p-6 text-center shadow-md hover:shadow-lg transition">
-              <h3 className="text-xl font-semibold mb-4">{service.title}</h3>
-              <p className="text-gray-600">{service.description}</p>
+            <div key={index} className="bg-blue-100 rounded-lg p-6 text-center shadow-lg hover:shadow-xl transition transform hover:scale-105">
+              <h3 className="text-xl font-semibold mb-4 text-blue-800">{service.title}</h3>
+              <p className="text-gray-700">{service.description}</p>
             </div>
           ))}
         </div>
@@ -94,27 +94,25 @@ const Home = () => {
   );
 };
 
-// Medicine Card Component with similar design to Medicines page
+// Medicine Card Component with modern design
 const MedicineCard = ({ medicine }) => (
   <motion.div 
-    className="glassmorphism bg-white bg-opacity-80 backdrop-blur-lg rounded-lg shadow-lg p-[3.25rem] flex flex-col justify-between hover:shadow-xl transition"
+    className="bg-white shadow-md rounded-lg p-6 flex flex-col items-center justify-between hover:shadow-lg transition transform hover:scale-105"
     whileHover={{ scale: 1.05 }}
     transition={{ duration: 0.3 }}
   >
-    <div className="flex flex-col items-center">
-      <img
-        src={medicine.image}
-        alt={medicine.name}
-        className="w-24 h-24 mb-4 object-cover"
-      />
-      <h3 className="text-lg font-semibold text-gray-800">{medicine.name}</h3>
-      <h2 className="text-lg font-semibold text-gray-700">{medicine.category}</h2>
-      <p className="text-gray-700">₹{medicine.price}</p>
-      <p className={`text-${medicine.availability === 'In Stock' ? 'green' : 'red'}-600 font-semibold`}>
-        {medicine.availability}
-      </p>
-    </div>
-    <Link to={`/medicine-details/${medicine.id}`} className="mt-3 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 shadow-md text-center">
+    <img
+      src={medicine.image}
+      alt={medicine.name}
+      className="w-24 h-24 object-cover mb-4"
+    />
+    <h3 className="text-lg font-semibold text-gray-800">{medicine.name}</h3>
+    <p className="text-gray-600">{medicine.category}</p>
+    <p className="text-blue-600 font-bold">₹{medicine.price}</p>
+    <p className={`text-${medicine.availability === 'In Stock' ? 'green' : 'red'}-600 font-semibold`}>
+      {medicine.availability}
+    </p>
+    <Link to={`/medicine-details/${medicine.id}`} className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
       View Details
     </Link>
   </motion.div>
