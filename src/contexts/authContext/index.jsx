@@ -1,12 +1,12 @@
-import React from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../../firebase";
-import { useContext, useState, useEffect } from "react";
+import { doSignOut } from "../../Auth";
 
 const AuthContext = React.createContext();
 
-export function useAuth(){
-    return useContext(AuthContext);
+export function useAuth() {
+  return useContext(AuthContext);
 }
 
 export function AuthProvider({ children }) {
@@ -14,30 +14,38 @@ export function AuthProvider({ children }) {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
 
-    useEffect(() =>{
-        const unsubscribe = onAuthStateChanged(auth, initializeUser);
-        return unsubscribe;
-    }, []);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, initializeUser);
+    return () => unsubscribe();
+  }, []);
 
-    async function initializeUser(user) {
-        if (user) {
-            setCurrentUser({ ...user });
-            setUserLoggedIn(true);
-        }else{
-            setCurrentUser(null);
-            setUserLoggedIn(false);
-        }
-        setLoading(false);
+  async function initializeUser(user) {
+    if (user) {
+      // Destructure important user details
+      const { displayName, email, uid } = user;
+      setCurrentUser({
+        displayName,
+        email,
+        uid,
+      });
+      setUserLoggedIn(true);
+    } else {
+      setCurrentUser(null);
+      setUserLoggedIn(false);
     }
-    const value = {
-        currentUser,
-        userLoggedIn,
-        loading
-    }
+    setLoading(false);
+  }
 
-    return (
-        <AuthContext.Provider value={value}>
-            {!loading && children}
-        </AuthContext.Provider>
-    )
+  const value = {
+    currentUser,
+    userLoggedIn,
+    loading,
+    doSignOut
+  };
+
+  return (
+    <AuthContext.Provider value={value}>
+      {!loading && children}
+    </AuthContext.Provider>
+  );
 }
