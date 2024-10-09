@@ -6,7 +6,9 @@ import { collection, getDocs } from 'firebase/firestore';
 
 const Home = () => {
   const [medicines, setMedicines] = useState([]);
+  const [filteredMedicines, setFilteredMedicines] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchMedicines = async () => {
@@ -14,15 +16,14 @@ const Home = () => {
         const medicinesCollection = collection(db, 'medicine');
         const medicineSnapshot = await getDocs(medicinesCollection);
         
-        let medicineList = medicineSnapshot.docs.map(doc => ({
+        const medicineList = medicineSnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data(),
         }));
-        
-        // Randomly select 4 to 5 medicines
-        medicineList = medicineList.sort(() => 0.5 - Math.random()).slice(0, 5);
 
+        const randomMedicines = medicineList.sort(() => 0.5 - Math.random()).slice(0, 4);
         setMedicines(medicineList);
+        setFilteredMedicines(randomMedicines);
       } catch (error) {
         console.error("Error fetching medicines: ", error);
       } finally {
@@ -33,53 +34,67 @@ const Home = () => {
     fetchMedicines();
   }, []);
 
+  const handleSearch = () => {
+    const lowerCaseQuery = searchQuery.toLowerCase();
+    const filtered = medicines.filter(medicine => 
+      medicine.name.toLowerCase().includes(lowerCaseQuery)
+    );
+    setFilteredMedicines(filtered);
+  };
+
+  const handleSearchInputChange = (e) => {
+    setSearchQuery(e.target.value);
+    handleSearch();
+  };
+
   if (loading) {
     return <p className="text-center text-blue-600 mt-12">Loading medicines...</p>;
   }
 
   return (
-    <div className="bg-gradient-to-r from-blue-50 to-blue-100 min-h-screen">
-      {/* Banner with centered search bar */}
-      <div className="relative">
-        <div className="w-full h-80 bg-gradient-to-b from-blue-400 to-blue-600 flex items-center justify-center shadow-lg">
-          <motion.h1
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.5 }}
-            className="absolute top-12 text-4xl font-extrabold text-white"
-          >
-            Your Health, Our Priority
-          </motion.h1>
-
-          <div className="absolute bottom-12 w-full flex justify-center">
-            <div className="w-full max-w-xl px-4">
-              <div className="p-4 rounded-lg shadow-lg bg-white bg-opacity-90">
-                <input
-                  type="text"
-                  placeholder="Search for medicines..."
-                  className="w-full px-4 py-3 rounded-md bg-white bg-opacity-80 text-gray-800 placeholder-gray-600 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                />
-                <button className="mt-4 w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300 shadow-lg">
-                  Search
-                </button>
-              </div>
-            </div>
+    <div className="bg-gradient-to-br from-blue-200 via-indigo-300 to-purple-400 min-h-screen py-8">
+      {/* Header with a Search Bar */}
+      <header className="flex flex-col items-center mb-12">
+        <motion.h1
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.2 }}
+          className="text-5xl font-extrabold text-gray-800 mb-4"
+        >
+          Your Health, Our Priority
+        </motion.h1>
+        
+        <div className="w-full max-w-lg px-4">
+          <div className="p-4 rounded-lg shadow-lg bg-white bg-opacity-90">
+            <input
+              type="text"
+              placeholder="Search for medicines..."
+              value={searchQuery}
+              onChange={handleSearchInputChange}
+              className="w-full px-4 py-3 rounded-md text-gray-800 placeholder-gray-600 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+            <button 
+              onClick={handleSearch} 
+              className="mt-4 w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300 shadow-lg"
+            >
+              Search
+            </button>
           </div>
         </div>
-      </div>
+      </header>
 
       {/* Medicines Section */}
-      <section className="py-16 px-4">
-        <h2 className="text-3xl text-center font-bold mb-8 text-blue-700">Recommended Medicines</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
-          {medicines.map((medicine) => (
+      <section className="mb-16">
+        <h2 className="text-4xl text-center font-bold mb-8 text-gray-800">Recommended Medicines</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 px-4 max-w-6xl mx-auto">
+          {filteredMedicines.map((medicine) => (
             <MedicineCard key={medicine.id} medicine={medicine} />
           ))}
         </div>
       </section>
 
       {/* Services Section */}
-      <section className="bg-white py-16 shadow-inner">
+      <section className="bg-transparent py-16 shadow-lg rounded-lg">
         <h2 className="text-3xl text-center font-bold mb-10 text-gray-800">Our Services</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4 max-w-7xl mx-auto">
           {services.map((service, index) => (
@@ -94,7 +109,7 @@ const Home = () => {
   );
 };
 
-// Medicine Card Component with modern design
+// Medicine Card Component
 const MedicineCard = ({ medicine }) => (
   <motion.div 
     className="bg-white shadow-md rounded-lg p-6 flex flex-col items-center justify-between hover:shadow-lg transition transform hover:scale-105"
@@ -104,15 +119,15 @@ const MedicineCard = ({ medicine }) => (
     <img
       src={medicine.image}
       alt={medicine.name}
-      className="w-24 h-24 object-cover mb-4"
+      className="w-28 h-28 object-cover mb-4 rounded-md"
     />
     <h3 className="text-lg font-semibold text-gray-800">{medicine.name}</h3>
     <p className="text-gray-600">{medicine.category}</p>
     <p className="text-blue-600 font-bold">₹{medicine.price}</p>
-    <p className={`text-${medicine.availability === 'In Stock' ? 'green' : 'red'}-600 font-semibold`}>
+    <p className={`font-semibold text-${medicine.availability === 'In Stock' ? 'green' : 'red'}-600`}>
       {medicine.availability}
     </p>
-    <Link to={`/medicine-details/${medicine.id}`} className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+    <Link to={`/medicine-details/${medicine.id}`} className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">
       View Details
     </Link>
   </motion.div>
