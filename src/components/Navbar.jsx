@@ -68,12 +68,7 @@ const Navbar = () => {
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="flex items-center space-x-2 focus:outline-none"
               >
-                <img
-                  src={currentUser?.photoURL || "/default-avatar.png"} // Placeholder if no photoURL
-                  alt="Profile"
-                  className="w-8 h-8 rounded-full border-2 border-white"
-                />
-                <span className="text-black hover:text-blue-300 transition duration-300">
+                <span className="text-black font-bold hover:text-blue-300 transition duration-300">
                   {currentUser?.displayName || currentUser?.email}
                 </span>
               </button>
