@@ -21,7 +21,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4 flex justify-between items-center">
         {/* Logo */}
         <div className="text-white font-extrabold text-2xl">
-          <Link to="/home" className="hover:text-blue-200 transition-all duration-300">
+          <Link to="/" className="hover:text-blue-200 transition-all duration-300">
             CarryCure
           </Link>
         </div>
@@ -29,7 +29,7 @@ const Navbar = () => {
         {/* Links for larger screens */}
         <div className="hidden md:flex space-x-8">
           <Link
-            to="/home"
+            to="/"
             className="text-white hover:text-blue-300 font-semibold transition-all duration-300"
           >
             Home

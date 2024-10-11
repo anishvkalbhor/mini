@@ -5,6 +5,8 @@ import { motion } from 'framer-motion';
 import { db } from '../firebase';
 import { FaRegCalendarAlt, FaShoppingCart } from 'react-icons/fa';
 import { CartContext } from '../contexts/CartContext';
+import { toast } from 'react-toastify'; // Importing toast
+import 'react-toastify/dist/ReactToastify.css'; // Import toastify CSS
 
 const MedicineDetails = () => {
   const { id } = useParams();
@@ -62,6 +64,11 @@ const MedicineDetails = () => {
   // Convert Firebase Timestamp to a readable date
   const formatDate = (timestamp) => {
     return timestamp ? timestamp.toDate().toLocaleDateString() : 'N/A';
+  };
+
+  const handleAddToCart = (medicine) => {
+    addToCart(medicine);
+    toast.success(`${medicine.name} added to cart!`, { autoClose: 2000 }); // Triggering toast
   };
 
   return (
@@ -123,7 +130,7 @@ const MedicineDetails = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="w-full bg-blue-600 text-white py-3 rounded-lg shadow hover:bg-blue-700 transition-all"
-              onClick={() => addToCart(medicine)}
+              onClick={() => handleAddToCart(medicine)} // Triggering add to cart with toast
             >
               <FaShoppingCart className="mr-2 inline-block" /> Add to Cart
             </motion.button>

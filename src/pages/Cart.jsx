@@ -2,12 +2,26 @@ import React, { useContext } from 'react';
 import { FaPlusCircle, FaMinusCircle, FaTrashAlt } from 'react-icons/fa';
 import { CartContext } from '../contexts/CartContext';
 import { motion } from 'framer-motion';
+import { ToastContainer, toast } from 'react-toastify';  // Import ToastContainer and toast
+import 'react-toastify/dist/ReactToastify.css';  // Import Toastify CSS
 
 const Cart = () => {
   const { cart, updateCartQuantity, removeFromCart } = useContext(CartContext);
 
   const calculateTotal = () => {
     return cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  };
+
+  // Function to handle item quantity updates
+  const handleUpdateQuantity = (name, quantity) => {
+    updateCartQuantity(name, quantity);
+    toast.info(`Quantity updated for ${name}`);  // Show toast for updating quantity
+  };
+
+  // Function to handle removing an item from the cart
+  const handleRemoveFromCart = (name) => {
+    removeFromCart(name);
+    toast.error(`${name} removed from cart`);  // Show toast for removing an item
   };
 
   return (
@@ -68,20 +82,20 @@ const Cart = () => {
                   <FaMinusCircle
                     onClick={() => {
                       if (item.quantity > 1) {
-                        updateCartQuantity(item.name, item.quantity - 1);
+                        handleUpdateQuantity(item.name, item.quantity - 1);
                       }
                     }}
                     className="text-gray-600 cursor-pointer text-2xl hover:text-red-500"
                   />
                   <p>{item.quantity}</p>
                   <FaPlusCircle
-                    onClick={() => updateCartQuantity(item.name, item.quantity + 1)}
+                    onClick={() => handleUpdateQuantity(item.name, item.quantity + 1)}
                     className="text-gray-600 cursor-pointer text-2xl hover:text-green-500"
                   />
                 </div>
 
                 <FaTrashAlt
-                  onClick={() => removeFromCart(item.name)}
+                  onClick={() => handleRemoveFromCart(item.name)}
                   className="text-red-600 cursor-pointer text-2xl hover:text-red-800"
                 />
               </motion.div>
@@ -102,6 +116,9 @@ const Cart = () => {
           </motion.div>
         </motion.div>
       )}
+
+      {/* Toast Container */}
+      <ToastContainer position="top-right" autoClose={2000} hideProgressBar />
     </motion.div>
   );
 };
