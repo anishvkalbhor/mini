@@ -9,7 +9,7 @@ const Medicines = () => {
   const [medicines, setMedicines] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const categories = ['All', 'Pain Relief', 'Vitamins', 'Antacids', 'Cold & Flu'];
+  const categories = ['All', 'Pain Relief', 'Vitamins', 'Antacids', 'Cold & Flu', 'Sexual Wellness', 'Fitness Supplements', 'Ayurvedic'];
 
   useEffect(() => {
     const fetchMedicines = async () => {
