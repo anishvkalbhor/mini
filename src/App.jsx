@@ -1,11 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
-import Login from './pages/Login'; // Login/Register page
-import Home from './pages/Home'; // Home page
-import Medicines from './pages/Medicines'; // Medicines page
-import MedicineDetails from './pages/MedicineDetails'; // Medicines page
-import Contact from './pages/Contact'; // Contact page
+import Login from './pages/Login'; 
+import Home from './pages/Home'; 
+import Medicines from './pages/Medicines'; 
+import MedicineDetails from './pages/MedicineDetails'; 
+import Contact from './pages/Contact';
 import Cart from './pages/Cart';
 import 'react-toastify/dist/ReactToastify.css';
 import { CartProvider } from './contexts/CartContext';
