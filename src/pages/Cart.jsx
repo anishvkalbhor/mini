@@ -15,13 +15,13 @@ const Cart = () => {
   // Function to handle item quantity updates
   const handleUpdateQuantity = (name, quantity) => {
     updateCartQuantity(name, quantity);
-    toast.info(`Quantity updated for ${name}`);  // Show toast for updating quantity
+    toast.info(`Quantity updated for ${name}`);  
   };
 
   // Function to handle removing an item from the cart
   const handleRemoveFromCart = (name) => {
     removeFromCart(name);
-    toast.error(`${name} removed from cart`);  // Show toast for removing an item
+    toast.error(`${name} removed from cart`);  
   };
 
   return (
