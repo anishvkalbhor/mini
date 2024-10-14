@@ -71,6 +71,7 @@ export const CartProvider = ({ children }) => {
   
   const clearCart = () => {
     setCart([]);
+    saveCartToFirestore([]);
   };
 
   // Fetch user's cart on mount or when user changes
