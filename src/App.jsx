@@ -7,6 +7,7 @@ import Medicines from './pages/Medicines';
 import MedicineDetails from './pages/MedicineDetails'; 
 import Contact from './pages/Contact';
 import Cart from './pages/Cart';
+import Payment from './pages/Payment';  // Import Payment component
 import 'react-toastify/dist/ReactToastify.css';
 import { CartProvider } from './contexts/CartContext';
 import About from './pages/About';
@@ -16,21 +17,21 @@ const App = () => {
 
   return (
     <CartProvider>
-    <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/medicines" element={<Medicines  />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/medicine-details/:id" element={<MedicineDetails />} />
-        <Route path="/contact" element={<Contact />} />
-      </Routes>
-      <ToastContainer />
-    </Router>
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/medicines" element={<Medicines />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/medicine-details/:id" element={<MedicineDetails />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/payment" element={<Payment />} />
+        </Routes>
+        <ToastContainer />
+      </Router>
     </CartProvider>
-
   );
 };
 

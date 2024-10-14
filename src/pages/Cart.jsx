@@ -1,27 +1,34 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { FaPlusCircle, FaMinusCircle, FaTrashAlt } from 'react-icons/fa';
 import { CartContext } from '../contexts/CartContext';
 import { motion } from 'framer-motion';
-import { ToastContainer, toast } from 'react-toastify';  // Import ToastContainer and toast
-import 'react-toastify/dist/ReactToastify.css';  // Import Toastify CSS
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Cart = () => {
   const { cart, updateCartQuantity, removeFromCart } = useContext(CartContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.paymentSuccess) {
+      toast.success('Payment Successful');
+    }
+  }, [location]);
 
   const calculateTotal = () => {
     return cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
   };
 
-  // Function to handle item quantity updates
   const handleUpdateQuantity = (name, quantity) => {
     updateCartQuantity(name, quantity);
-    toast.info(`Quantity updated for ${name}`);  
+    toast.info(`Quantity updated for ${name}`);
   };
 
-  // Function to handle removing an item from the cart
   const handleRemoveFromCart = (name) => {
     removeFromCart(name);
-    toast.error(`${name} removed from cart`);  
+    toast.error(`${name} removed from cart`);
   };
 
   return (
@@ -31,7 +38,6 @@ const Cart = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
     >
-      {/* Background with animated gradient */}
       <motion.div
         className="absolute inset-0 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 opacity-80"
         style={{ zIndex: -1 }}
@@ -40,7 +46,6 @@ const Cart = () => {
         transition={{ duration: 1 }}
       />
 
-      {/* Subtle animated background blobs */}
       <motion.div
         className="absolute top-10 left-10 w-60 h-60 bg-blue-300 rounded-full opacity-30 filter blur-xl"
         animate={{ scale: [1, 1.1, 1], opacity: [0.8, 0.9, 0.8] }}
@@ -102,7 +107,6 @@ const Cart = () => {
             ))}
           </div>
 
-          {/* Total Price Section */}
           <motion.div
             className="flex justify-between items-center mt-6"
             initial={{ opacity: 0, y: 30 }}
@@ -110,14 +114,16 @@ const Cart = () => {
             transition={{ delay: 0.3 }}
           >
             <h2 className="text-2xl font-bold text-gray-800">Total: ₹{calculateTotal()}</h2>
-            <button className="bg-blue-600/80 text-white px-6 py-2 rounded-lg hover:bg-blue-700/90 transition">
+            <button
+              className="bg-blue-600/80 text-white px-6 py-2 rounded-lg hover:bg-blue-700/90 transition"
+              onClick={() => navigate('/payment')}
+            >
               Proceed to Checkout
             </button>
           </motion.div>
         </motion.div>
       )}
 
-      {/* Toast Container */}
       <ToastContainer position="top-right" autoClose={2000} hideProgressBar />
     </motion.div>
   );

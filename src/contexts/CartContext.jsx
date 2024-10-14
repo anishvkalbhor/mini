@@ -68,6 +68,10 @@ export const CartProvider = ({ children }) => {
       return updatedCart;
     });
   };
+  
+  const clearCart = () => {
+    setCart([]);
+  };
 
   // Fetch user's cart on mount or when user changes
   useEffect(() => {
@@ -77,7 +81,7 @@ export const CartProvider = ({ children }) => {
   }, [currentUser]);
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, updateCartQuantity, removeFromCart }}>
+    <CartContext.Provider value={{ cart, clearCart, addToCart, updateCartQuantity, removeFromCart }}>
       {children}
     </CartContext.Provider>
   );
