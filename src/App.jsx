@@ -7,7 +7,7 @@ import Medicines from './pages/Medicines';
 import MedicineDetails from './pages/MedicineDetails'; 
 import Contact from './pages/Contact';
 import Cart from './pages/Cart';
-import Payment from './pages/Payment';  // Import Payment component
+import Payment from './pages/Payment';  
 import 'react-toastify/dist/ReactToastify.css';
 import { CartProvider } from './contexts/CartContext';
 import About from './pages/About';
