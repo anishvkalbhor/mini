@@ -43,33 +43,22 @@ const Medicines = () => {
 
   return (
     <motion.div
-      className="relative container mx-auto py-12 px-4 min-h-screen"
+      className="relative container mx-auto py-12 px-4 min-h-screen bg-white"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
     >
       {/* Animated Background */}
       <motion.div
-        className="absolute inset-0 bg-gradient-to-b from-blue-400 via-blue-500 to-blue-600 opacity-90"
+        className="absolute inset-0 bg-gradient-to-b from-blue-300 via-blue-400 to-blue-500 opacity-50"
         style={{ zIndex: -1 }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
       />
 
-      {/* Subtle animated background blobs */}
-      <motion.div
-        className="absolute top-10 left-10 w-60 h-60 bg-blue-300 rounded-full opacity-30 filter blur-xl"
-        animate={{ scale: [1, 1.1, 1], opacity: [0.8, 0.9, 0.8] }}
-        transition={{ duration: 6, repeat: Infinity, repeatType: 'mirror' }}
-      />
-      <motion.div
-        className="absolute bottom-10 right-10 w-80 h-80 bg-blue-400 rounded-full opacity-30 filter blur-2xl"
-        animate={{ scale: [1, 1.1, 1], opacity: [0.8, 0.9, 0.8] }}
-        transition={{ duration: 7, repeat: Infinity, repeatType: 'mirror' }}
-      />
-
-      <h1 className="text-4xl font-semibold text-center text-white mb-8">Check Out the Medicines Here!!</h1>
+      {/* Title */}
+      <h1 className="text-4xl font-semibold text-center text-blue-600 mb-8">Check Out the Medicines Here!!</h1>
       
       {/* Category Tabs */}
       <div className="flex justify-center mb-8">
@@ -77,8 +66,8 @@ const Medicines = () => {
           <motion.button
             key={category}
             onClick={() => setSelectedCategory(category)}
-            className={`px-4 py-2 rounded-xl transition-all duration-300 mx-2 ${
-              selectedCategory === category ? 'bg-blue-600 text-white' : 'bg-white text-gray-800'
+            className={`px-4 py-2 rounded-xl transition-all duration-300 mx-2 border-2 ${
+              selectedCategory === category ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-blue-600 border-blue-300'
             } shadow-lg hover:shadow-xl`}
             whileHover={{ scale: 1.05 }}
           >
@@ -107,7 +96,7 @@ const Medicines = () => {
 // Medicine Card Component with Framer Motion Hover Effect
 const MedicineCard = ({ medicine }) => (
   <motion.div 
-    className="bg-white/40 backdrop-blur-lg rounded-lg shadow-lg p-6 flex flex-col justify-between items-center transition-all"
+    className="bg-white rounded-lg shadow-lg p-6 flex flex-col justify-between items-center transition-all"
     whileHover={{
       scale: 1.05,
       transition: { duration: 0.3 },

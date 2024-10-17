@@ -94,7 +94,7 @@ const Home = () => {
       </section>
 
       {/* Services Section */}
-      <section className="bg-transparent py-16 shadow-lg rounded-lg">
+      <section className="bg-transparent py-16 rounded-lg">
         <h2 className="text-3xl text-center font-bold mb-10 text-gray-800">Our Services</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4 max-w-7xl mx-auto">
           {services.map((service, index) => (

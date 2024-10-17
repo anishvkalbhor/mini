@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-google-maps/api": "^2.20.3",
     "emailjs-com": "^3.2.0",
     "firebase": "^10.14.0",
     "framer-motion": "^11.11.1",

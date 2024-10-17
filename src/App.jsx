@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import Login from './pages/Login'; 
 import Home from './pages/Home'; 
 import Medicines from './pages/Medicines'; 
@@ -29,6 +30,7 @@ const App = () => {
           <Route path="/contact" element={<Contact />} />
           <Route path="/payment" element={<Payment />} />
         </Routes>
+        <Footer />
         <ToastContainer />
       </Router>
     </CartProvider>
