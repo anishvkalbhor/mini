@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
+import WebcamCapture from './webcam';
 
 const Home = () => {
   const [medicines, setMedicines] = useState([]);
@@ -149,4 +150,5 @@ const services = [
   },
 ];
 
+<WebcamCapture/>
 export default Home;

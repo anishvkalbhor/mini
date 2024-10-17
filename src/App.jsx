@@ -13,6 +13,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { CartProvider } from './contexts/CartContext';
 import About from './pages/About';
 import { ToastContainer } from 'react-toastify';
+import Webcam  from 'react-webcam';
+
 
 const App = () => {
 
@@ -29,11 +31,13 @@ const App = () => {
           <Route path="/medicine-details/:id" element={<MedicineDetails />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/payment" element={<Payment />} />
+          <Route path="/webcam" element={<Webcam />} />
         </Routes>
         <Footer />
         <ToastContainer />
       </Router>
     </CartProvider>
+    
   );
 };
 
