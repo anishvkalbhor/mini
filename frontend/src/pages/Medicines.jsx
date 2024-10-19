@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
+import { CartContext } from '../contexts/CartContext'; // Import CartContext
+import { toast } from 'react-toastify'; // Importing toast
+import 'react-toastify/dist/ReactToastify.css'; // Import toastify CSS
 
 const Medicines = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [medicines, setMedicines] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { addToCart } = useContext(CartContext); // Destructure addToCart from context
 
   const categories = ['All', 'Pain Relief', 'Vitamins', 'Antacids', 'Cold & Flu', 'Sexual Wellness', 'Fitness Supplements', 'Ayurvedic'];
 
@@ -40,6 +44,11 @@ const Medicines = () => {
   if (loading) {
     return <p>Loading medicines...</p>; // Loading indicator
   }
+
+  const handleAddToCart = (medicine) => {
+    addToCart(medicine);
+    toast.success(`${medicine.name} added to cart!`, { autoClose: 2000 }); // Triggering toast notification
+  };
 
   return (
     <motion.div
@@ -85,7 +94,7 @@ const Medicines = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <MedicineCard medicine={medicine} />
+            <MedicineCard medicine={medicine} onAddToCart={handleAddToCart} />
           </motion.div>
         ))}
       </div>
@@ -94,7 +103,7 @@ const Medicines = () => {
 };
 
 // Medicine Card Component with Framer Motion Hover Effect
-const MedicineCard = ({ medicine }) => (
+const MedicineCard = ({ medicine, onAddToCart }) => (
   <motion.div 
     className="bg-white rounded-lg shadow-lg p-6 flex flex-col justify-between items-center transition-all"
     whileHover={{
@@ -108,7 +117,6 @@ const MedicineCard = ({ medicine }) => (
       className="w-32 h-32 mb-4 object-cover rounded-md"
       whileHover={{
         scale: 1.1,
-        rotate: 5,
         transition: { duration: 0.3 },
       }}
     />
@@ -118,9 +126,24 @@ const MedicineCard = ({ medicine }) => (
     <p className={`text-md ${medicine.availability ? 'text-green-600' : 'text-red-600'} mb-3`}>
       {medicine.availability ? 'In Stock' : 'Out of Stock'}
     </p>
-    <Link to={`/medicine-details/${medicine.id}`} className="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 transition">
-      View Details
-    </Link>
+
+    {/* Button Container for View Details and Add to Cart */}
+    <div className="flex space-x-4 mt-2"> {/* Flex container with spacing */}
+      {/* View Details Button */}
+      <Link to={`/medicine-details/${medicine.id}`} className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
+        View Details
+      </Link>
+
+      {/* Add to Cart Button */}
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
+        onClick={() => onAddToCart(medicine)} // Triggering add to cart with toast
+      >
+        Add to Cart
+      </motion.button>
+    </div>
   </motion.div>
 );
 

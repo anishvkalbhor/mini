@@ -1,15 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
-import WebcamCapture from './WebcamCapture';
+import { CartContext } from '../contexts/CartContext';
+import { toast } from 'react-toastify'; 
+import 'react-toastify/dist/ReactToastify.css'; 
+
 
 const Home = () => {
   const [medicines, setMedicines] = useState([]);
   const [filteredMedicines, setFilteredMedicines] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const { addToCart } = useContext(CartContext);
 
   useEffect(() => {
     const fetchMedicines = async () => {
@@ -87,22 +91,9 @@ const Home = () => {
       {/* Medicines Section */}
       <section className="mb-16">
         <h2 className="text-4xl text-center font-bold mb-8 text-gray-800">Recommended Medicines</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 px-4 max-w-6xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 px-4 max-w-8xl mx-auto">
           {filteredMedicines.map((medicine) => (
-            <MedicineCard key={medicine.id} medicine={medicine} />
-          ))}
-        </div>
-      </section>
-
-      {/* Services Section */}
-      <section className="bg-transparent py-16 rounded-lg">
-        <h2 className="text-3xl text-center font-bold mb-10 text-gray-800">Our Services</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4 max-w-7xl mx-auto">
-          {services.map((service, index) => (
-            <div key={index} className="bg-blue-100 rounded-lg p-6 text-center shadow-lg hover:shadow-xl transition transform hover:scale-105">
-              <h3 className="text-xl font-semibold mb-4 text-blue-800">{service.title}</h3>
-              <p className="text-gray-700">{service.description}</p>
-            </div>
+            <MedicineCard key={medicine.id} medicine={medicine} onAddToCart={addToCart} />
           ))}
         </div>
       </section>
@@ -110,45 +101,43 @@ const Home = () => {
   );
 };
 
-// Medicine Card Component
-const MedicineCard = ({ medicine }) => (
-  <motion.div 
-    className="bg-white shadow-md rounded-lg p-6 flex flex-col items-center justify-between hover:shadow-lg transition transform hover:scale-105"
-    whileHover={{ scale: 1.05 }}
-    transition={{ duration: 0.3 }}
-  >
-    <img
-      src={medicine.image}
-      alt={medicine.name}
-      className="w-28 h-28 object-cover mb-4 rounded-md"
-    />
-    <h3 className="text-lg font-semibold text-gray-800">{medicine.name}</h3>
-    <p className="text-gray-600">{medicine.category}</p>
-    <p className="text-blue-600 font-bold">₹{medicine.price}</p>
-    <p className={`font-semibold text-${medicine.availability === 'In Stock' ? 'green' : 'red'}-600`}>
-      {medicine.availability}
-    </p>
-    <Link to={`/medicine-details/${medicine.id}`} className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">
-      View Details
-    </Link>
-  </motion.div>
-);
+const MedicineCard = ({ medicine, onAddToCart }) => {
+  const handleAddToCart = () => {
+    onAddToCart(medicine);
+    toast.success(`${medicine.name} added to cart!`, { autoClose: 2000 });
+  };
 
-// Dummy data for services
-const services = [
-  {
-    title: 'Free Home Delivery',
-    description: 'Get your medicines delivered to your doorstep at no extra cost.',
-  },
-  {
-    title: '24/7 Customer Support',
-    description: 'We\'re here to assist you anytime, day or night.',
-  },
-  {
-    title: 'Affordable Prices',
-    description: 'We offer medicines and health products at competitive prices.',
-  },
-];
+  return (
+    <motion.div 
+      className="bg-white shadow-md rounded-lg p-8 flex flex-col items-center justify-between hover:shadow-lg transition transform hover:scale-105 w-84"
+      whileHover={{ scale: 1.05 }}
+      transition={{ duration: 0.3 }}
+    >
+      <img
+        src={medicine.image}
+        alt={medicine.name}
+        className="w-32 h-32 object-cover mb-6 rounded-md"
+      />
+      <h3 className="text-lg font-semibold text-gray-800">{medicine.name}</h3>
+      <p className="text-gray-600">{medicine.category}</p>
+      <p className="text-blue-600 font-bold">₹{medicine.price}</p>
+      <p className={`font-semibold text-${medicine.availability === 'In Stock' ? 'green' : 'red'}-600`}>
+        {medicine.availability}
+      </p>
 
-<WebcamCapture/>
+      <div className="mt-4 flex gap-4 justify-center">
+        <Link to={`/medicine-details/${medicine.id}`} className="bg-blue-400 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">
+          View Details
+        </Link>
+        <button 
+          onClick={handleAddToCart}
+          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition"
+        >
+          Add to Cart
+        </button>
+      </div>
+    </motion.div>
+  );
+};
+
 export default Home;

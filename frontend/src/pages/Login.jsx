@@ -24,7 +24,7 @@ const Login = () => {
       } else {
         await doCreateUserWithEmailAndPassword(email, password);
       }
-      navigate('/home');
+      navigate('/');
     } catch (error) {
       setError('Authentication failed. Please try again.');
     }
@@ -33,7 +33,7 @@ const Login = () => {
   const handleGoogleSignIn = async () => {
     try {
       await doSigninWithGoogle();
-      navigate('/home');
+      navigate('/');
     } catch (error) {
       setError('Google sign-in failed. Please try again.');
     }
