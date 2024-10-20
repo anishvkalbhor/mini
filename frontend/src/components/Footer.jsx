@@ -1,11 +1,8 @@
 import React from 'react';
-import { LoadScript, GoogleMap, Marker } from '@react-google-maps/api';
 import { motion } from 'framer-motion';
-
-const GOOGLE_MAPS_API_KEY = 'YOUR_GOOGLE_MAPS_API_KEY'; // Replace with your actual API key
+import NearbyPharmacies from './NearbyPharmacies'; // Import your map component
 
 const Footer = () => {
-  const userLocation = { lat: 19.229, lng: 72.854 }; // Example: Borivali (W), Mumbai
 
   return (
     <motion.footer
@@ -44,37 +41,20 @@ const Footer = () => {
           </ul>
         </motion.div>
 
-        {/* Right Section: Google Map for Nearby Pharmacies */}
-        {/* <motion.div
-          className="rounded-lg overflow-hidden shadow-xl"
+        {/* Right Section: Map */}
+        <motion.div
+          className="space-y-6"
           initial={{ x: 50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
         >
-          <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
-            <GoogleMap
-              mapContainerClassName="w-full h-64 rounded-lg"
-              center={userLocation}
-              zoom={14}
-              options={{
-                styles: [
-                  {
-                    featureType: "all",
-                    elementType: "geometry",
-                    stylers: [{ color: "#ffffff" }]
-                  },
-                  {
-                    featureType: "water",
-                    elementType: "geometry",
-                    stylers: [{ color: "#e0e0e0" }]
-                  },
-                ],
-              }}
-            >
-              <Marker position={userLocation} label="You" />
-            </GoogleMap>
-          </LoadScript>
-        </motion.div> */}
+          <h2 className="text-3xl font-extrabold text-white">Nearby Pharmacies</h2>
+          
+          {/* Map Component */}
+          <div className="h-50 w-full">
+            <NearbyPharmacies />  
+          </div>
+        </motion.div>
       </div>
 
       {/* Bottom Bar */}
