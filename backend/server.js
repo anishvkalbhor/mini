@@ -1,34 +1,42 @@
-require('dotenv').config();
-const express = require('express');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const bodyParser = require('body-parser');
-const cors = require('cors');
-
+require("dotenv").config();
+const express = require("express");
 const app = express();
+const cors = require("cors");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
+app.use(express.json());
 app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
-// Create payment intent
-app.post('/create-payment-intent', async (req, res) => {
-  const { amount } = req.body;
+// checkout api
+app.post("/api/create-checkout-session",async(req,res)=>{
+    const {products} = req.body;
 
-  try {
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount, // The amount in the smallest currency unit (e.g., cents for USD)
-      currency: 'INR', // Set the currency, e.g., INR
-      payment_method_types: ['card'], 
+
+    const lineItems = products.map((product)=>({
+        price_data:{
+            currency:"inr",
+            product_data:{
+                name:product.name,
+                images:[product.image]
+            },
+            unit_amount:product.price * 100,
+        },
+        quantity:product.quantity
+    }));
+
+    const session = await stripe.checkout.sessions.create({
+        payment_method_types:["card"],
+        line_items:lineItems,
+        mode:"payment",
+        success_url:"http://localhost:5173/",
+        cancel_url:"http://localhost:5173/cart",
     });
 
-    res.status(200).json({ clientSecret: paymentIntent.client_secret });
-  } catch (error) {
-    console.error('Error creating payment intent:', error);
-    res.status(500).json({ error: 'Failed to create payment intent' });
-  }
-});
+    res.json({id:session.id})
+ 
+})
 
-// Start server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+
+app.listen(7000,()=>{
+    console.log("server start")
+})
