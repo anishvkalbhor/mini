@@ -21,9 +21,6 @@ const Cart = () => {
     name: currentUser ? currentUser.displayName : "",
     address: "",
     contact: "",
-    email: "", // New field
-    city: "",  // New field
-    saveInfo: false // New checkbox
   });
   const stripe = useStripe();
   const elements = useElements();
@@ -79,10 +76,8 @@ const Cart = () => {
           name: formData.name,
           address: {
             line1: formData.address,
-            city: formData.city, // New field added
           },
           phone: formData.contact,
-          email: formData.email // New field added
         },
       },
     });
@@ -98,12 +93,7 @@ const Cart = () => {
   };
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
-  };
-
-  const closeModal = () => {
-    setModalIsOpen(false); // Function to close the modal
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   return (
@@ -146,10 +136,12 @@ const Cart = () => {
       )}
 
       {/* Modal for Payment Details */}
-      <Modal isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Payment Modal" className="modal-container">
-        <motion.div className="bg-white p-10 mt-[7rem] rounded-lg shadow-lg w-full max-w-md mx-auto overflow-y-auto max-h-[80vh]">
-          <motion.div className="flex justify-center items-center">
-            <h2 className="text-2xl font-bold mb-4">Make your Payment</h2>
+      <Modal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)} contentLabel="Payment Modal" className="modal-container">
+        <motion.div className="bg-white p-10 mt-[7rem] rounded-lg shadow-lg w-full max-w-md mx-auto">
+          <motion.div
+          className="flex justify-center items-center"
+          >
+          <h2 className="text-2xl font-bold mb-4">Make your Payment</h2>
           </motion.div>
           <form onSubmit={handleCheckout}>
             <div className="mb-4">
@@ -175,20 +167,9 @@ const Cart = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">City</label>
+              <label className="block text-gray-700 text-sm font-bold mb-2">Contact Number</label>
               <input
                 type="text"
-                name="city"
-                value={formData.city}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">Contact</label>
-              <input
-                type="tel"
                 name="contact"
                 value={formData.contact}
                 onChange={handleChange}
@@ -197,40 +178,20 @@ const Cart = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">Email</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
+              <CardElement className="p-3 border rounded-md" />
             </div>
-            <div className="mb-4">
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  name="saveInfo"
-                  checked={formData.saveInfo}
-                  onChange={handleChange}
-                  className="mr-2"
-                />
-                Save this information for future payments
-              </label>
-            </div>
-            <CardElement className="border p-4 rounded-md" />
-            <div className="flex flex-col justify-between mt-4">
-              <button type="submit" className="bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 transition-colors">
-                Pay Now
-              </button>
-              <button type="button" onClick={closeModal} className="bg-red-500 text-white font-bold mt-3 py-2 px-4 rounded-md hover:bg-red-600 transition-colors">
-                Cancel
-              </button>
-            </div>
+            <button type="submit" className="bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 transition-colors w-full">
+              Pay Now
+            </button>
           </form>
+          <motion.div
+          className="items-center text-center"
+          >
+          <button onClick={() => setModalIsOpen(false)} className="bg-red-500 text-white font-bold py-2 px-3 mt-3 w-full rounded-md hover:bg-red-600">Cancel</button>
+          </motion.div>
         </motion.div>
       </Modal>
+
       <ToastContainer />
     </motion.div>
   );
