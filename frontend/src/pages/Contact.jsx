@@ -42,12 +42,12 @@ const Contact = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-r from-purple-400 via-blue-500 to-indigo-600 flex items-center justify-center p-4">
+    <div className="relative min-h-screen bg-gray-100 flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-white shadow-lg rounded-lg p-8 md:p-16 relative overflow-hidden"
+        className="bg-white shadow-lg rounded-lg p-8 md:p-16 relative overflow-hidden max-w-4xl"
       >
         <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">Contact Us</h1>
         
@@ -59,20 +59,20 @@ const Contact = () => {
             transition={{ duration: 0.5 }}
           >
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">Our Contact Details</h2>
-            <p className="text-lg text-gray-700 mb-4">
+            <p className="text-lg text-gray-600 mb-4">
               If you have any questions or need further assistance, feel free to contact us.
             </p>
             <div className="flex items-center mb-4">
               <FaPhone className="text-gray-500 mr-3" />
-              <p className="text-lg text-gray-700">+91 9325359422</p>
+              <p className="text-lg text-gray-600">+91 9325359422</p>
             </div>
             <div className="flex items-center mb-4">
               <FaEnvelope className="text-gray-500 mr-3" />
-              <p className="text-lg text-gray-700">anishkalbhor2020@gmail.com</p>
+              <p className="text-lg text-gray-600">anishkalbhor2020@gmail.com</p>
             </div>
             <div className="flex items-center mb-4">
               <FaMapMarkerAlt className="text-gray-500 mr-3" />
-              <p className="text-lg text-gray-700">Borivali (W), Mumbai, India</p>
+              <p className="text-lg text-gray-600">Borivali (W), Mumbai, India</p>
             </div>
           </motion.div>
 
@@ -93,7 +93,7 @@ const Contact = () => {
                   value={formData.name}
                   onChange={handleInputChange}
                   required
-                  className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring focus:ring-blue-500 focus:outline-none"
+                  className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring focus:ring-green-500 focus:outline-none"
                 />
               </div>
               <div>
@@ -105,7 +105,7 @@ const Contact = () => {
                   value={formData.email}
                   onChange={handleInputChange}
                   required
-                  className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring focus:ring-blue-500 focus:outline-none"
+                  className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring focus:ring-green-500 focus:outline-none"
                 />
               </div>
               <div>
@@ -116,7 +116,7 @@ const Contact = () => {
                   value={formData.message}
                   onChange={handleInputChange}
                   required
-                  className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring focus:ring-blue-500 focus:outline-none"
+                  className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring focus:ring-green-500 focus:outline-none"
                   rows="5"
                 />
               </div>
@@ -124,7 +124,7 @@ const Contact = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 type="submit"
-                className={`w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                 disabled={loading}
               >
                 {loading ? 'Sending...' : 'Send Message'}
@@ -135,9 +135,9 @@ const Contact = () => {
         </div>
       </motion.div>
 
-      {/* Animated Background Shapes */}
-      <div className="absolute top-0 left-0 w-96 h-96 bg-indigo-500 opacity-30 rounded-full mix-blend-multiply filter blur-2xl animate-pulse"></div>
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500 opacity-30 rounded-full mix-blend-multiply filter blur-2xl animate-pulse"></div>
+      {/* Subtle Background Shapes */}
+      <div className="absolute top-0 left-0 w-72 h-72 bg-gray-300 opacity-20 rounded-full mix-blend-multiply filter blur-2xl animate-pulse"></div>
+      <div className="absolute bottom-0 right-0 w-72 h-72 bg-green-300 opacity-20 rounded-full mix-blend-multiply filter blur-2xl animate-pulse"></div>
     </div>
   );
 };
