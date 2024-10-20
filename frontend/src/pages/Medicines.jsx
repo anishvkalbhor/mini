@@ -52,14 +52,14 @@ const Medicines = () => {
 
   return (
     <motion.div
-      className="relative container mx-auto py-12 px-4 min-h-screen bg-white"
+      className="relative container mx-auto py-12 px-4 min-h-screen bg-gray-50"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
     >
       {/* Animated Background */}
       <motion.div
-        className="absolute inset-0 bg-gradient-to-b from-blue-300 via-blue-400 to-blue-500 opacity-50"
+        className="absolute inset-0 bg-gradient-to-b from-white via-gray-100 to-gray-200 opacity-50"
         style={{ zIndex: -1 }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -67,7 +67,7 @@ const Medicines = () => {
       />
 
       {/* Title */}
-      <h1 className="text-4xl font-semibold text-center text-blue-600 mb-8">Check Out the Medicines Here!!</h1>
+      <h1 className="text-4xl font-semibold text-center text-teal-700 mb-8">Explore Our Medicines</h1>
       
       {/* Category Tabs */}
       <div className="flex justify-center mb-8">
@@ -76,8 +76,8 @@ const Medicines = () => {
             key={category}
             onClick={() => setSelectedCategory(category)}
             className={`px-4 py-2 rounded-xl transition-all duration-300 mx-2 border-2 ${
-              selectedCategory === category ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-blue-600 border-blue-300'
-            } shadow-lg hover:shadow-xl`}
+              selectedCategory === category ? 'bg-teal-300 text-teal-900 border-teal-400' : 'bg-white text-gray-600 border-gray-300'
+            } shadow-md hover:shadow-lg`}
             whileHover={{ scale: 1.05 }}
           >
             {category}
@@ -105,9 +105,9 @@ const Medicines = () => {
 // Medicine Card Component with Framer Motion Hover Effect
 const MedicineCard = ({ medicine, onAddToCart }) => (
   <motion.div 
-    className="bg-white rounded-lg shadow-lg p-6 flex flex-col justify-between items-center transition-all"
+    className="bg-white rounded-lg shadow-md p-6 flex flex-col justify-between items-center transition-all"
     whileHover={{
-      scale: 1.05,
+      scale: 1.03,
       transition: { duration: 0.3 },
     }}
   >
@@ -120,17 +120,17 @@ const MedicineCard = ({ medicine, onAddToCart }) => (
         transition: { duration: 0.3 },
       }}
     />
-    <h3 className="text-xl font-semibold text-gray-800 mb-2">{medicine.name}</h3>
-    <h4 className="text-md font-medium text-gray-600 mb-2">{medicine.category}</h4>
-    <p className="text-lg font-medium text-gray-700 mb-1">₹{medicine.price}</p>
-    <p className={`text-md ${medicine.availability ? 'text-green-600' : 'text-red-600'} mb-3`}>
+    <h3 className="text-lg font-semibold text-gray-900 mb-2">{medicine.name}</h3>
+    <h4 className="text-sm font-medium text-gray-500 mb-2">{medicine.category}</h4>
+    <p className="text-lg font-medium text-gray-800 mb-1">₹{medicine.price}</p>
+    <p className={`text-md ${medicine.availability ? 'text-teal-600' : 'text-red-600'} mb-3`}>
       {medicine.availability ? 'In Stock' : 'Out of Stock'}
     </p>
 
     {/* Button Container for View Details and Add to Cart */}
     <div className="flex space-x-4 mt-2"> {/* Flex container with spacing */}
       {/* View Details Button */}
-      <Link to={`/medicine-details/${medicine.id}`} className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
+      <Link to={`/medicine-details/${medicine.id}`} className="bg-teal-300 text-teal-900 px-4 py-2 rounded-md hover:bg-teal-400 transition">
         View Details
       </Link>
 
@@ -138,7 +138,7 @@ const MedicineCard = ({ medicine, onAddToCart }) => (
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition"
+        className="bg-teal-400 text-white px-4 py-2 rounded-md hover:bg-teal-500 transition"
         onClick={() => onAddToCart(medicine)} // Triggering add to cart with toast
       >
         Add to Cart
