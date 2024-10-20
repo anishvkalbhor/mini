@@ -9,9 +9,9 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements, useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import Modal from 'react-modal';
 
-const stripePromise = loadStripe('pk_test_51QBKOWP2oQkdeIloanCHIdd8E4XyNwksDammT3HfPWwpkKhsWpFUNCM9YNjq5NHO6aW7z1eMgAcbkd3tnXJ47y3n00KT9afTmk'); // Replace with your publishable key
+const stripePromise = loadStripe('pk_test_51QBKOWP2oQkdeIloanCHIdd8E4XyNwksDammT3HfPWwpkKhsWpFUNCM9YNjq5NHO6aW7z1eMgAcbkd3tnXJ47y3n00KT9afTmk'); 
 
-Modal.setAppElement('#root'); // For accessibility with modal
+Modal.setAppElement('#root'); 
 
 const Cart = () => {
   const { cart, updateCartQuantity, removeFromCart, clearCart, currentUser } = useContext(CartContext);
@@ -21,6 +21,9 @@ const Cart = () => {
     name: currentUser ? currentUser.displayName : "",
     address: "",
     contact: "",
+    email: "", // New field
+    city: "",  // New field
+    saveInfo: false // New checkbox
   });
   const stripe = useStripe();
   const elements = useElements();
@@ -48,7 +51,7 @@ const Cart = () => {
   };
 
   const handlePayment = async () => {
-    const amount = calculateTotal() * 100; // Convert to cents/paise
+    const amount = calculateTotal() * 100; 
     try {
       const res = await fetch('http://localhost:5000/create-payment-intent', {
         method: 'POST',
@@ -56,8 +59,8 @@ const Cart = () => {
         body: JSON.stringify({ amount }),
       });
       const data = await res.json();
-      setClientSecret(data.clientSecret); // Set the client secret for Stripe
-      setModalIsOpen(true); // Open the modal when payment intent is created
+      setClientSecret(data.clientSecret); 
+      setModalIsOpen(true); 
     } catch (error) {
       toast.error("Failed to create payment intent");
     }
@@ -76,8 +79,10 @@ const Cart = () => {
           name: formData.name,
           address: {
             line1: formData.address,
+            city: formData.city, // New field added
           },
           phone: formData.contact,
+          email: formData.email // New field added
         },
       },
     });
@@ -93,7 +98,12 @@ const Cart = () => {
   };
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+    setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false); // Function to close the modal
   };
 
   return (
@@ -136,9 +146,11 @@ const Cart = () => {
       )}
 
       {/* Modal for Payment Details */}
-      <Modal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)} contentLabel="Payment Modal" className="modal-container">
-        <motion.div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-auto">
-          <h2 className="text-2xl font-bold mb-4">Enter Payment Details</h2>
+      <Modal isOpen={modalIsOpen} onRequestClose={closeModal} contentLabel="Payment Modal" className="modal-container">
+        <motion.div className="bg-white p-10 mt-[7rem] rounded-lg shadow-lg w-full max-w-md mx-auto overflow-y-auto max-h-[80vh]">
+          <motion.div className="flex justify-center items-center">
+            <h2 className="text-2xl font-bold mb-4">Make your Payment</h2>
+          </motion.div>
           <form onSubmit={handleCheckout}>
             <div className="mb-4">
               <label className="block text-gray-700 text-sm font-bold mb-2">Name</label>
@@ -163,9 +175,20 @@ const Cart = () => {
               />
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">Contact Number</label>
+              <label className="block text-gray-700 text-sm font-bold mb-2">City</label>
               <input
                 type="text"
+                name="city"
+                value={formData.city}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700 text-sm font-bold mb-2">Contact</label>
+              <input
+                type="tel"
                 name="contact"
                 value={formData.contact}
                 onChange={handleChange}
@@ -174,16 +197,40 @@ const Cart = () => {
               />
             </div>
             <div className="mb-4">
-              <CardElement className="p-3 border rounded-md" />
+              <label className="block text-gray-700 text-sm font-bold mb-2">Email</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
             </div>
-            <button type="submit" className="bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 transition-colors w-full">
-              Pay Now
-            </button>
+            <div className="mb-4">
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="saveInfo"
+                  checked={formData.saveInfo}
+                  onChange={handleChange}
+                  className="mr-2"
+                />
+                Save this information for future payments
+              </label>
+            </div>
+            <CardElement className="border p-4 rounded-md" />
+            <div className="flex flex-col justify-between mt-4">
+              <button type="submit" className="bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 transition-colors">
+                Pay Now
+              </button>
+              <button type="button" onClick={closeModal} className="bg-red-500 text-white font-bold mt-3 py-2 px-4 rounded-md hover:bg-red-600 transition-colors">
+                Cancel
+              </button>
+            </div>
           </form>
-          <button onClick={() => setModalIsOpen(false)} className="mt-4 text-blue-500 hover:underline">Cancel</button>
         </motion.div>
       </Modal>
-
       <ToastContainer />
     </motion.div>
   );
