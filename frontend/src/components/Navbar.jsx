@@ -35,30 +35,28 @@ const Navbar = () => {
           >
             Home
           </Link>
+
           <Link
             to="/medicines"
             className="text-gray-200 hover:text-gray-300 font-semibold transition-all duration-300"
           >
             Medicines
           </Link>
+
           <Link
-            to="/medicine"  // Corrected path for Health Blog
-            className="text-gray-200 hover:text-gray-300 font-semibold transition-all duration-300"
-          >
-            Health Blog
-          </Link>
-          <Link
-            to="/HealthBlog"  // Updated path for About Us
+            to="/about"  // Updated path for About Us
             className="text-gray-200 hover:text-gray-300 font-semibold transition-all duration-300"
           >
             About Us
           </Link>
+
           <Link
             to="/contact"
             className="text-gray-200 hover:text-gray-300 font-semibold transition-all duration-300"
           >
             Contact
           </Link>
+
           <Link
             to="/cart"
             className="text-gray-200 hover:text-gray-300 font-semibold transition-all duration-300"

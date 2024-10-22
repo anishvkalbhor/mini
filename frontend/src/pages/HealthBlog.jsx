@@ -24,7 +24,6 @@ const HealthBlog = () => {
       image: 'https://via.placeholder.com/400x200',
       date: '2024-10-13',
     },
-    // Add more posts as needed
   ];
 
   return (

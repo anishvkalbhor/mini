@@ -18,6 +18,7 @@ import Cancel from './components/Success';
 
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
+import HealthBlog from './pages/HealthBlog';
 const stripePromise = loadStripe('pk_test_51QBKOWP2oQkdeIloanCHIdd8E4XyNwksDammT3HfPWwpkKhsWpFUNCM9YNjq5NHO6aW7z1eMgAcbkd3tnXJ47y3n00KT9afTmk'); // Replace with your publishable key
 
 
@@ -31,6 +32,7 @@ const App = () => {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/about" element={<About />} />
+            {/* <Route path="/healthblog" element={<HealthBlog />} /> */}
             <Route path="/medicines" element={<Medicines />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/medicine-details/:id" element={<MedicineDetails />} />
@@ -39,6 +41,7 @@ const App = () => {
             <Route path="/success" component={<Success />} />
             <Route path="/cancel" component={<Cancel />} />
           </Routes>
+          <HealthBlog />
           <Footer />
           <ToastContainer />
         </Router>
