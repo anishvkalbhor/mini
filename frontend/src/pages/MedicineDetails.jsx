@@ -5,8 +5,8 @@ import { motion } from 'framer-motion';
 import { db } from '../firebase';
 import { FaRegCalendarAlt, FaShoppingCart } from 'react-icons/fa';
 import { CartContext } from '../contexts/CartContext';
-import { toast } from 'react-toastify'; // Importing toast
-import 'react-toastify/dist/ReactToastify.css'; // Import toastify CSS
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const MedicineDetails = () => {
   const { id } = useParams();
@@ -61,20 +61,19 @@ const MedicineDetails = () => {
     return <p>No details available for this medicine.</p>;
   }
 
-  // Convert Firebase Timestamp to a readable date
   const formatDate = (timestamp) => {
     return timestamp ? timestamp.toDate().toLocaleDateString() : 'N/A';
   };
 
   const handleAddToCart = (medicine) => {
     addToCart(medicine);
-    toast.success(`${medicine.name} added to cart!`, { autoClose: 2000 }); // Triggering toast
+    toast.success(`${medicine.name} added to cart!`, { autoClose: 2000 });
   };
 
   return (
-    <div className="bg-gradient-to-r from-blue-300 via-blue-100 to-white py-12 min-h-screen relative">
-      {/* Background design */}
-      <div className="absolute inset-0 bg-gradient-to-t from-blue-500 to-transparent opacity-20" />
+    <div className="bg-gray-100 py-12 min-h-screen relative">
+      {/* Background Design */}
+      <div className="absolute inset-0 bg-gradient-to-t from-green-400 to-transparent opacity-10" />
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -94,8 +93,8 @@ const MedicineDetails = () => {
               alt={medicine.name}
               className="w-48 h-48 md:w-64 md:h-64 rounded-full object-cover shadow-lg mb-6"
             />
-            <h1 className="text-4xl font-bold text-blue-700 mb-3">{medicine.name}</h1>
-            <h4 className="text-xl text-gray-600 mb-6">{medicine.category}</h4>
+            <h1 className="text-4xl font-bold text-green-600 mb-3">{medicine.name}</h1>
+            <h4 className="text-xl text-gray-700 mb-6">{medicine.category}</h4>
             <p className="text-lg text-gray-600 leading-relaxed mb-8">{medicine.description}</p>
 
             <div className="flex space-x-6">
@@ -115,10 +114,10 @@ const MedicineDetails = () => {
             initial={{ scale: 0.9 }}
             animate={{ scale: 1 }}
             transition={{ duration: 0.6 }}
-            className="w-full md:w-1/3 bg-blue-50 p-6 rounded-xl shadow-lg text-center md:text-left"
+            className="w-full md:w-1/3 bg-gray-50 p-6 rounded-xl shadow-lg text-center md:text-left"
           >
             <p className="text-3xl font-semibold text-gray-900 mb-4">
-              ₹<span className="font-bold text-blue-700">{medicine.price}</span>
+              ₹<span className="font-bold text-green-600">{medicine.price}</span>
             </p>
             <p className="text-lg text-gray-600 mb-6">
               Availability: <span className={`font-bold ${medicine.availability ? 'text-green-600' : 'text-red-600'}`}>
@@ -129,8 +128,8 @@ const MedicineDetails = () => {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="w-full bg-blue-600 text-white py-3 rounded-lg shadow hover:bg-blue-700 transition-all"
-              onClick={() => handleAddToCart(medicine)} // Triggering add to cart with toast
+              className="w-full bg-green-600 text-white py-3 rounded-lg shadow hover:bg-green-700 transition-all"
+              onClick={() => handleAddToCart(medicine)}
             >
               <FaShoppingCart className="mr-2 inline-block" /> Add to Cart
             </motion.button>
@@ -140,7 +139,7 @@ const MedicineDetails = () => {
 
       {/* Recommended Medicines */}
       <div className="relative z-10 mt-16 max-w-6xl mx-auto">
-        <h2 className="text-3xl font-bold text-blue-700 mb-8 text-center">Recommended Medicines</h2>
+        <h2 className="text-3xl font-bold text-green-600 mb-8 text-center">Recommended Medicines</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {recommendedMedicines.map((med) => (
             <motion.div
@@ -150,7 +149,7 @@ const MedicineDetails = () => {
             >
               <Link to={`/medicine-details/${med.id}`}>
                 <img src={med.image} alt={med.name} className="w-full h-48 object-cover rounded-lg mb-4" />
-                <h3 className="text-lg font-bold text-blue-700">{med.name}</h3>
+                <h3 className="text-lg font-bold text-green-600">{med.name}</h3>
                 <h4 className="text-gray-600">Price: Rs.{med.price}</h4>
                 <p className="text-gray-600">{med.category}</p>
               </Link>

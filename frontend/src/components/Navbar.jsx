@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/authContext'; // Adjust the path according to your structure
 
 const Navbar = () => {
   const { currentUser, userLoggedIn, loading, doSignOut } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate(); // Make sure to import useNavigate
 
   const handleLogout = async () => {
     try {
@@ -17,11 +18,11 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white shadow-md py-4 sticky top-0 z-50">
+    <nav className="bg-gray-800 shadow-md py-4 sticky top-0 z-50">
       <div className="container mx-auto px-4 flex justify-between items-center">
         {/* Logo */}
-        <div className="text-gray-900 font-bold text-2xl">
-          <Link to="/" className="hover:text-gray-600 transition-all duration-300">
+        <div className="text-white font-bold text-2xl">
+          <Link to="/" className="hover:text-gray-300 transition-all duration-300">
             CarryCure
           </Link>
         </div>
@@ -30,31 +31,37 @@ const Navbar = () => {
         <div className="hidden md:flex space-x-8">
           <Link
             to="/"
-            className="text-gray-900 hover:text-gray-600 font-semibold transition-all duration-300"
+            className="text-gray-200 hover:text-gray-300 font-semibold transition-all duration-300"
           >
             Home
           </Link>
           <Link
             to="/medicines"
-            className="text-gray-900 hover:text-gray-600 font-semibold transition-all duration-300"
+            className="text-gray-200 hover:text-gray-300 font-semibold transition-all duration-300"
           >
             Medicines
           </Link>
           <Link
-            to="/about"
-            className="text-gray-900 hover:text-gray-600 font-semibold transition-all duration-300"
+            to="/medicine"  // Corrected path for Health Blog
+            className="text-gray-200 hover:text-gray-300 font-semibold transition-all duration-300"
+          >
+            Health Blog
+          </Link>
+          <Link
+            to="/HealthBlog"  // Updated path for About Us
+            className="text-gray-200 hover:text-gray-300 font-semibold transition-all duration-300"
           >
             About Us
           </Link>
           <Link
             to="/contact"
-            className="text-gray-900 hover:text-gray-600 font-semibold transition-all duration-300"
+            className="text-gray-200 hover:text-gray-300 font-semibold transition-all duration-300"
           >
             Contact
           </Link>
           <Link
             to="/cart"
-            className="text-gray-900 hover:text-gray-600 font-semibold transition-all duration-300"
+            className="text-gray-200 hover:text-gray-300 font-semibold transition-all duration-300"
           >
             Cart
           </Link>
@@ -68,24 +75,24 @@ const Navbar = () => {
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="flex items-center space-x-2 focus:outline-none"
               >
-                <span className="text-gray-900 font-semibold hover:text-gray-600 transition-all duration-300">
+                <span className="text-gray-200 font-semibold hover:text-gray-300 transition-all duration-300">
                   {currentUser?.displayName || currentUser?.email}
                 </span>
               </button>
 
               {/* Dropdown menu */}
               {isMenuOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-lg py-2 z-10">
+                <div className="absolute right-0 mt-2 w-48 bg-gray-700 shadow-md rounded-lg py-2 z-10">
                   <Link
                     to="/cart"
-                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-all duration-200"
+                    className="block px-4 py-2 text-gray-200 hover:bg-gray-600 rounded-lg transition-all duration-200"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     Cart
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-all duration-200"
+                    className="w-full text-left px-4 py-2 text-gray-200 hover:bg-gray-600 rounded-lg transition-all duration-200"
                   >
                     Logout
                   </button>
@@ -96,7 +103,7 @@ const Navbar = () => {
             !loading && (
               <Link
                 to="/login"
-                className="text-gray-900 hover:text-gray-600 font-medium transition-all duration-300"
+                className="text-gray-200 hover:text-gray-300 font-medium transition-all duration-300"
               >
                 Login/Register
               </Link>
@@ -108,7 +115,7 @@ const Navbar = () => {
         <div className="md:hidden">
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="text-gray-900 focus:outline-none"
+            className="text-gray-200 focus:outline-none"
           >
             <svg
               className="w-6 h-6"
@@ -130,31 +137,38 @@ const Navbar = () => {
 
       {/* Mobile menu */}
       {isMenuOpen && (
-        <div className="md:hidden bg-gray-50 shadow-lg px-4 py-2 rounded-lg">
+        <div className="md:hidden bg-gray-700 shadow-lg px-4 py-2 rounded-lg">
           <Link
-            to="/home"
-            className="block text-gray-900 hover:bg-gray-100 py-2 rounded-lg transition-all duration-200"
+            to="/"
+            className="block text-gray-200 hover:bg-gray-600 py-2 rounded-lg transition-all duration-200"
             onClick={() => setIsMenuOpen(false)}
           >
             Home
           </Link>
           <Link
             to="/medicines"
-            className="block text-gray-900 hover:bg-gray-100 py-2 rounded-lg transition-all duration-200"
+            className="block text-gray-200 hover:bg-gray-600 py-2 rounded-lg transition-all duration-200"
             onClick={() => setIsMenuOpen(false)}
           >
             Medicines
           </Link>
           <Link
-            to="/about"
-            className="block text-gray-900 hover:bg-gray-100 py-2 rounded-lg transition-all duration-200"
+            to="/medicine"  // Corrected path for Health Blog
+            className="block text-gray-200 hover:bg-gray-600 py-2 rounded-lg transition-all duration-200"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            Health Blog
+          </Link>
+          <Link
+            to="/HealthBlog"  // Updated path for About Us
+            className="block text-gray-200 hover:bg-gray-600 py-2 rounded-lg transition-all duration-200"
             onClick={() => setIsMenuOpen(false)}
           >
             About Us
           </Link>
           <Link
             to="/contact"
-            className="block text-gray-900 hover:bg-gray-100 py-2 rounded-lg transition-all duration-200"
+            className="block text-gray-200 hover:bg-gray-600 py-2 rounded-lg transition-all duration-200"
             onClick={() => setIsMenuOpen(false)}
           >
             Contact
