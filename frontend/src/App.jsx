@@ -13,6 +13,8 @@ import { CartProvider } from './contexts/CartContext';
 import About from './pages/About';
 import { ToastContainer } from 'react-toastify';
 import WebcamCapture from './pages/WebcamCapture';
+import Success from './components/Success';
+import Cancel from './components/Success';
 
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
@@ -34,6 +36,8 @@ const App = () => {
             <Route path="/medicine-details/:id" element={<MedicineDetails />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/webcam" element={<WebcamCapture />} />
+            <Route path="/success" component={<Success />} />
+            <Route path="/cancel" component={<Cancel />} />
           </Routes>
           <Footer />
           <ToastContainer />

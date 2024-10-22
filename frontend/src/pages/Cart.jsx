@@ -1,37 +1,13 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { FaPlusCircle, FaMinusCircle, FaTrashAlt } from "react-icons/fa";
 import { CartContext } from "../contexts/CartContext";
 import { motion } from "framer-motion";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useNavigate, useLocation } from "react-router-dom";
 import { loadStripe } from "@stripe/stripe-js";
-import { Elements, useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
-import Modal from 'react-modal';
-
-const stripePromise = loadStripe('pk_test_51QBKOWP2oQkdeIloanCHIdd8E4XyNwksDammT3HfPWwpkKhsWpFUNCM9YNjq5NHO6aW7z1eMgAcbkd3tnXJ47y3n00KT9afTmk'); // Replace with your publishable key
-
-Modal.setAppElement('#root'); // For accessibility with modal
 
 const Cart = () => {
-  const { cart, updateCartQuantity, removeFromCart, clearCart, currentUser } = useContext(CartContext);
-  const [clientSecret, setClientSecret] = useState("");
-  const [modalIsOpen, setModalIsOpen] = useState(false); // Modal state
-  const [formData, setFormData] = useState({
-    name: currentUser ? currentUser.displayName : "",
-    address: "",
-    contact: "",
-  });
-  const stripe = useStripe();
-  const elements = useElements();
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  useEffect(() => {
-    if (location.state?.paymentSuccess) {
-      toast.success("Payment Successful!");
-    }
-  }, [location]);
+  const { cart, updateCartQuantity, removeFromCart, clearCart } = useContext(CartContext); // Make sure clearCart is in your CartContext
 
   const calculateTotal = () => {
     return cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
@@ -47,54 +23,46 @@ const Cart = () => {
     toast.error(`${name} removed from cart`);
   };
 
+  // payment integration
   const handlePayment = async () => {
-    const amount = calculateTotal() * 100; // Convert to cents/paise
+    const stripe = await loadStripe("pk_test_51QBKOWP2oQkdeIloanCHIdd8E4XyNwksDammT3HfPWwpkKhsWpFUNCM9YNjq5NHO6aW7z1eMgAcbkd3tnXJ47y3n00KT9afTmk");
+  
+    const body = {
+      products: cart,
+    };
+    const headers = {
+      "Content-Type": "application/json",
+    };
+  
     try {
-      const res = await fetch('http://localhost:5000/create-payment-intent', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount }),
+      const response = await fetch("http://localhost:7000/api/create-checkout-session", {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(body),
       });
-      const data = await res.json();
-      setClientSecret(data.clientSecret); // Set the client secret for Stripe
-      setModalIsOpen(true); // Open the modal when payment intent is created
+  
+      const session = await response.json();
+  
+      const result = await stripe.redirectToCheckout({
+        sessionId: session.id,
+      });
+  
+      if (result.error) {
+        console.log(result.error);
+        toast.error("Payment failed. Please try again.");
+        return; // Exit if there's an error
+      }
+  
+      // If payment is successful
+      toast.success("Payment successful! Thank you for your purchase.");
+      clearCart(); // Clear the cart only on successful payment
+  
     } catch (error) {
-      toast.error("Failed to create payment intent");
+      console.error("Payment error:", error);
+      toast.error("Payment failed. Please try again.");
     }
   };
-
-  const handleCheckout = async (e) => {
-    e.preventDefault();
-    if (!stripe || !elements) return;
-
-    const cardElement = elements.getElement(CardElement);
-
-    const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-      payment_method: {
-        card: cardElement,
-        billing_details: {
-          name: formData.name,
-          address: {
-            line1: formData.address,
-          },
-          phone: formData.contact,
-        },
-      },
-    });
-
-    if (error) {
-      toast.error(error.message);
-    } else if (paymentIntent.status === 'succeeded') {
-      toast.success("Payment Successful!");
-      clearCart(); // Clear the cart after payment
-      setModalIsOpen(false); // Close the modal on success
-      navigate("/", { state: { paymentSuccess: true } });
-    }
-  };
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  
 
   return (
     <motion.div className="relative container mx-auto py-12 px-4 min-h-screen">
@@ -134,55 +102,6 @@ const Cart = () => {
           </div>
         </motion.div>
       )}
-
-      {/* Modal for Payment Details */}
-      <Modal isOpen={modalIsOpen} onRequestClose={() => setModalIsOpen(false)} contentLabel="Payment Modal" className="modal-container">
-        <motion.div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md mx-auto">
-          <h2 className="text-2xl font-bold mb-4">Enter Payment Details</h2>
-          <form onSubmit={handleCheckout}>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">Name</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">Address</label>
-              <input
-                type="text"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">Contact Number</label>
-              <input
-                type="text"
-                name="contact"
-                value={formData.contact}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <CardElement className="p-3 border rounded-md" />
-            </div>
-            <button type="submit" className="bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 transition-colors w-full">
-              Pay Now
-            </button>
-          </form>
-          <button onClick={() => setModalIsOpen(false)} className="mt-4 text-blue-500 hover:underline">Cancel</button>
-        </motion.div>
-      </Modal>
 
       <ToastContainer />
     </motion.div>

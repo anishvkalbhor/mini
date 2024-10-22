@@ -89,7 +89,7 @@ const Home = () => {
 
       {/* Medicines Section */}
       <section className="mb-16">
-        <h2 className="text-3xl text-center font-bold mb-8 text-gray-900">Recommended Medicines</h2>
+        <h2 className="text-3xl text-center font-bold mb-8 text-gray-900">...Medicines for you...</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4 max-w-7xl mx-auto">
           {filteredMedicines.map((medicine) => (
             <MedicineCard key={medicine.id} medicine={medicine} onAddToCart={addToCart} />
@@ -108,7 +108,7 @@ const MedicineCard = ({ medicine, onAddToCart }) => {
 
   return (
     <motion.div 
-      className="bg-white shadow-md rounded-lg p-6 flex flex-col items-center justify-between hover:shadow-lg transition transform hover:scale-105"
+      className="bg-stone-100 shadow-md rounded-lg p-6 flex flex-col items-center justify-between hover:shadow-lg transition transform hover:scale-105"
       whileHover={{ scale: 1.05 }}
       transition={{ duration: 0.3 }}
     >
@@ -125,7 +125,7 @@ const MedicineCard = ({ medicine, onAddToCart }) => {
       </p>
 
       <div className="mt-4 flex gap-3 justify-center">
-        <Link to={`/medicine-details/${medicine.id}`} className="bg-gray-100 text-teal-600 px-3 py-1 rounded-md hover:bg-teal-500 hover:text-white transition">
+        <Link to={`/medicine-details/${medicine.id}`} className="bg-gray-100 content-center text-teal-600 px-3 py-1 rounded-md hover:bg-teal-500 hover:text-white transition">
           View Details
         </Link>
         <button 
