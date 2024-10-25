@@ -66,7 +66,6 @@ const Cart = () => {
 
   return (
     <motion.div className="relative container mx-auto py-12 px-4 min-h-screen">
-      {/* Background Effects */}
       <motion.div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 opacity-80" style={{ zIndex: -1 }} />
       <motion.div className="absolute top-10 left-10 w-60 h-60 bg-blue-300 rounded-full opacity-30 filter blur-xl" />
       <motion.div className="absolute bottom-10 right-10 w-80 h-80 bg-blue-400 rounded-full opacity-30 filter blur-2xl" />
