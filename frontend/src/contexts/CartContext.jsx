@@ -1,38 +1,34 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { db } from '../firebase'; // Import your Firebase setup
-import { useAuth } from '../contexts/authContext/index'; // Custom auth context
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { db } from '../firebase';
+import { useAuth } from '../contexts/authContext/index';
+import { doc, getDoc, setDoc, addDoc, collection } from 'firebase/firestore';
 
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
-  const { currentUser } = useAuth(); // Get current user's UID
+  const { currentUser } = useAuth();
 
-  // Fetch cart from Firestore for the logged-in user
   const fetchCartFromFirestore = async (userId) => {
-    if (!userId) return; // Ensure user is logged in
-    const cartRef = doc(db, 'carts', userId); // Use userId as document ID
+    if (!userId) return;
+    const cartRef = doc(db, 'carts', userId);
     const cartSnap = await getDoc(cartRef);
     if (cartSnap.exists()) {
-      setCart(cartSnap.data().items || []); // Set user's cart
+      setCart(cartSnap.data().items || []);
     }
   };
 
-  // Save cart to Firestore for the logged-in user
   const saveCartToFirestore = async (newCart) => {
-    if (currentUser) { // Ensure user is logged in
-      const cartRef = doc(db, 'carts', currentUser.uid); // Use currentUser's uid as document ID
-      await setDoc(cartRef, { items: newCart }, { merge: true }); // Merge to keep existing data
+    if (currentUser) {
+      const cartRef = doc(db, 'carts', currentUser.uid);
+      await setDoc(cartRef, { items: newCart }, { merge: true });
     }
   };
 
-  // Add item to cart
   const addToCart = (newItem) => {
     setCart((prevCart) => {
       const itemExists = prevCart.find(item => item.name === newItem.name);
       let updatedCart;
-
       if (itemExists) {
         updatedCart = prevCart.map(item =>
           item.name === newItem.name
@@ -42,39 +38,58 @@ export const CartProvider = ({ children }) => {
       } else {
         updatedCart = [...prevCart, { ...newItem, quantity: 1 }];
       }
-
-      saveCartToFirestore(updatedCart); // Save cart to Firestore
+      saveCartToFirestore(updatedCart);
       return updatedCart;
     });
   };
 
-  // Update item quantity in cart
   const updateCartQuantity = (itemName, newQuantity) => {
     setCart(prevCart => {
       const updatedCart = prevCart.map(item =>
         item.name === itemName ? { ...item, quantity: newQuantity } : item
       );
-
-      saveCartToFirestore(updatedCart); // Save cart to Firestore
+      saveCartToFirestore(updatedCart);
       return updatedCart;
     });
   };
 
-  // Remove item from cart
   const removeFromCart = (itemName) => {
     setCart(prevCart => {
       const updatedCart = prevCart.filter(item => item.name !== itemName);
-      saveCartToFirestore(updatedCart); // Save cart to Firestore
+      saveCartToFirestore(updatedCart);
       return updatedCart;
     });
   };
-  
-  const clearCart = () => {
-    setCart([]);
-    saveCartToFirestore([]);
+
+  // Save order details to Firebase
+  const addOrder = async (cart, totalAmount) => {
+    if (currentUser) {
+      const orderData = {
+        userId: currentUser.uid,
+        items: cart,
+        totalAmount,
+        createdAt: new Date().toISOString(),
+      };
+      try {
+        const ordersCollectionRef = collection(db, 'orders');
+        await addDoc(ordersCollectionRef, orderData);
+      } catch (error) {
+        console.error("Error saving order: ", error);
+      }
+    }
   };
 
-  // Fetch user's cart on mount or when user changes
+  const clearCart = async () => {
+    try {
+      if (currentUser) {
+        await setDoc(doc(db, 'carts', currentUser.uid), { items: [] });
+        setCart([]);
+      }
+    } catch (error) {
+      console.error("Error clearing cart: ", error);
+    }
+  };
+
   useEffect(() => {
     if (currentUser) {
       fetchCartFromFirestore(currentUser.uid);
@@ -82,7 +97,7 @@ export const CartProvider = ({ children }) => {
   }, [currentUser]);
 
   return (
-    <CartContext.Provider value={{ cart, clearCart, addToCart, updateCartQuantity, removeFromCart }}>
+    <CartContext.Provider value={{ cart, addToCart, updateCartQuantity, removeFromCart, addOrder, clearCart }}>
       {children}
     </CartContext.Provider>
   );

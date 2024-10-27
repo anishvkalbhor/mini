@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const router = require("./router");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 app.use(express.json());
@@ -36,6 +37,9 @@ app.post("/api/create-checkout-session",async(req,res)=>{
  
 })
 
+require("./geminiApi")
+
+app.use("/api", router)
 
 app.listen(7000,()=>{
     console.log("server start")
