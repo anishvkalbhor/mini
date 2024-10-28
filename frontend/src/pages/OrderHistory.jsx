@@ -32,7 +32,7 @@ const OrderHistory = () => {
         <p className="text-xl text-center">You have no previous orders.</p>
       ) : (
         <div className="grid gap-6">
-          {orders.map(order => (
+          {orders.map((order) => (
             <div key={order.id} className="bg-white shadow rounded-lg p-6">
               <h3 className="text-xl font-semibold">Order ID: {order.id}</h3>
               <p>Total Amount: ₹{order.totalAmount}</p>

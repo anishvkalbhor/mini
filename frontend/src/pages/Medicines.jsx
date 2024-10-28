@@ -134,12 +134,15 @@ const MedicineCard = ({ medicine, onAddToCart }) => (
         View Details
       </Link>
 
-      {/* Add to Cart Button */}
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="bg-teal-400 text-white px-4 py-2 rounded-md hover:bg-teal-500 transition"
-        onClick={() => onAddToCart(medicine)} // Triggering add to cart with toast
+        className={`bg-teal-400 text-white px-4 py-2 rounded-md hover:bg-teal-500 transition ${!medicine.availability ? 'disabled-button' : 'active-button'}`}
+        onClick={() => {
+          onAddToCart(medicine)
+          toast.success("Item out of stock", { autoClose: 2000 });
+        }}
+        disabled={!medicine.availability}
       >
         Add to Cart
       </motion.button>

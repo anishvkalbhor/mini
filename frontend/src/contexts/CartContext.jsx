@@ -26,6 +26,10 @@ export const CartProvider = ({ children }) => {
   };
 
   const addToCart = (newItem) => {
+    if (!newItem.availability) {
+      console.log("Item is out of stock");
+      return;
+    }
     setCart((prevCart) => {
       const itemExists = prevCart.find(item => item.name === newItem.name);
       let updatedCart;
@@ -42,6 +46,7 @@ export const CartProvider = ({ children }) => {
       return updatedCart;
     });
   };
+  
 
   const updateCartQuantity = (itemName, newQuantity) => {
     setCart(prevCart => {
