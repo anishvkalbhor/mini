@@ -8,6 +8,17 @@ import { CartContext } from '../contexts/CartContext';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+// Skeleton Loading Component
+const SkeletonLoader = () => (
+  <div className="animate-pulse space-y-4">
+    <div className="bg-gray-300 h-48 w-48 rounded-full mx-auto mb-6"></div>
+    <div className="h-8 bg-gray-300 rounded w-3/4 mx-auto mb-4"></div>
+    <div className="h-6 bg-gray-300 rounded w-1/2 mx-auto mb-6"></div>
+    <div className="h-5 bg-gray-300 rounded w-full mx-auto mb-4"></div>
+    <div className="h-5 bg-gray-300 rounded w-full mx-auto mb-4"></div>
+  </div>
+);
+
 const MedicineDetails = () => {
   const { id } = useParams();
   const [medicine, setMedicine] = useState(null);
@@ -54,7 +65,7 @@ const MedicineDetails = () => {
   }, [id]);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <SkeletonLoader />;
   }
 
   if (!medicine) {
@@ -141,20 +152,24 @@ const MedicineDetails = () => {
       <div className="relative z-10 mt-16 max-w-6xl mx-auto">
         <h2 className="text-3xl font-bold text-teal-700 mb-8 text-center">More Medicines from {medicine.category} Category</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {recommendedMedicines.map((med) => (
-            <motion.div
-              key={med.id}
-              whileHover={{ scale: 1.05 }}
-              className="bg-white shadow-lg rounded-xl p-4 transition-all hover:shadow-xl"
-            >
-              <Link to={`/medicine-details/${med.id}`}>
-                <img src={med.image} alt={med.name} className="w-full h-48 object-cover rounded-lg mb-4" />
-                <h3 className="text-lg font-bold text-teal-700">{med.name}</h3>
-                <h4 className="text-gray-600">Price: Rs.{med.price}</h4>
-                <p className="text-gray-600">{med.category}</p>
-              </Link>
-            </motion.div>
-          ))}
+          {loading ? (
+            <SkeletonLoader />
+          ) : (
+            recommendedMedicines.map((med) => (
+              <motion.div
+                key={med.id}
+                whileHover={{ scale: 1.05 }}
+                className="bg-white shadow-lg rounded-xl p-4 transition-all hover:shadow-xl"
+              >
+                <Link to={`/medicine-details/${med.id}`}>
+                  <img src={med.image} alt={med.name} className="w-full h-48 object-cover rounded-lg mb-4" />
+                  <h3 className="text-lg font-bold text-teal-700">{med.name}</h3>
+                  <h4 className="text-gray-600">Price: Rs.{med.price}</h4>
+                  <p className="text-gray-600">{med.category}</p>
+                </Link>
+              </motion.div>
+            ))
+          )}
         </div>
       </div>
     </div>

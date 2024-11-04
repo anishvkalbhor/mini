@@ -5,7 +5,9 @@ import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { CartContext } from "../contexts/CartContext";
 import { toast } from "react-toastify";
+import Skeleton from "react-loading-skeleton";
 import "react-toastify/dist/ReactToastify.css";
+import "react-loading-skeleton/dist/skeleton.css";
 
 // Chat Window Component
 const ChatWindow = ({ isOpen, onClose }) => {
@@ -83,7 +85,32 @@ const ChatWindow = ({ isOpen, onClose }) => {
       </button>
     </div>
   );
-  
+};
+
+// Medicine Card Component
+const MedicineCard = ({ medicine, onAddToCart }) => {
+  return (
+    <motion.div
+      whileHover={{ scale: 1.05 }}
+      className="p-4 bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow"
+    >
+      <Link to={`/medicine-details/${medicine.id}`}>
+        <img
+          src={medicine.image}
+          alt={medicine.name}
+          className="w-full h-40 object-cover rounded-lg mb-4"
+        />
+        <h3 className="text-lg font-semibold mb-2">{medicine.name}</h3>
+        <p className="text-gray-600 mb-2">Price: {medicine.price}</p>
+      </Link>
+      <button
+        onClick={() => onAddToCart(medicine)}
+        className="w-full bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600 transition duration-200"
+      >
+        Add to Cart
+      </button>
+    </motion.div>
+  );
 };
 
 const Home = () => {
@@ -133,15 +160,8 @@ const Home = () => {
     handleSearch();
   };
 
-  if (loading) {
-    return (
-      <p className="text-center text-gray-600 mt-12">Loading medicines...</p>
-    );
-  }
-
   return (
     <div className="bg-white min-h-screen py-8">
-      {/* Header with a Search Bar */}
       <header className="flex flex-col items-center mb-12">
         <motion.h1
           initial={{ opacity: 0, y: -50 }}
@@ -154,13 +174,17 @@ const Home = () => {
 
         <div className="w-full max-w-lg px-4">
           <div className="p-4 rounded-lg shadow-sm bg-gray-100">
-            <input
-              type="text"
-              placeholder="Search for medicines..."
-              value={searchQuery}
-              onChange={handleSearchInputChange}
-              className="w-full px-4 py-2 rounded-md text-gray-700 placeholder-gray-500 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-teal-400"
-            />
+            {loading ? (
+              <Skeleton height={45} />
+            ) : (
+              <input
+                type="text"
+                placeholder="Search for medicines..."
+                value={searchQuery}
+                onChange={handleSearchInputChange}
+                className="w-full px-4 py-2 rounded-md text-gray-700 placeholder-gray-500 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-teal-400"
+              />
+            )}
             <button
               onClick={handleSearch}
               className="mt-4 w-full bg-teal-500 text-white px-4 py-2 rounded-md hover:bg-teal-600 transition duration-300"
@@ -171,23 +195,25 @@ const Home = () => {
         </div>
       </header>
 
-      {/* Medicines Section */}
       <section className="mb-16">
         <h2 className="text-3xl text-center font-bold mb-8 text-gray-900">
           ...Medicines for you...
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 px-4 max-w-7xl mx-auto">
-          {filteredMedicines.map((medicine) => (
-            <MedicineCard
-              key={medicine.id}
-              medicine={medicine}
-              onAddToCart={addToCart}
-            />
-          ))}
+          {loading
+            ? Array.from({ length: 4 }).map((_, index) => (
+                <Skeleton key={index} height={300} width="100%" />
+              ))
+            : filteredMedicines.map((medicine) => (
+                <MedicineCard
+                  key={medicine.id}
+                  medicine={medicine}
+                  onAddToCart={addToCart}
+                />
+              ))}
         </div>
       </section>
 
-      {/* Floating AI Chatbot Icon */}
       <button
         onClick={() => setChatOpen(true)}
         className="absolute bottom-7 right-5 bg-teal-500 text-white p-3 rounded-full shadow hover:shadow-4xl transition"
@@ -195,63 +221,7 @@ const Home = () => {
         🤖
       </button>
 
-      {/* Chat Window */}
       <ChatWindow isOpen={chatOpen} onClose={() => setChatOpen(false)} />
-    </div>
-  );
-};
-
-const MedicineCard = ({ medicine, onAddToCart }) => {
-  const handleAddToCart = () => {
-    onAddToCart(medicine);
-    toast.success(`${medicine.name} added to cart!`, { autoClose: 2000 });
-  };
-
-  return (
-    <motion.div
-      className="bg-stone-100 shadow-md rounded-lg p-6 flex flex-col items-center justify-between hover:shadow-lg transition transform hover:scale-105"
-      whileHover={{ scale: 1.05 }}
-      transition={{ duration: 0.3 }}
-    >
-      <img
-        src={medicine.image}
-        alt={medicine.name}
-        className="w-32 h-32 object-cover mb-4 rounded-md"
-      />
-      <h3 className="text-lg font-medium text-gray-800">{medicine.name}</h3>
-      <p className="text-gray-600">{medicine.category}</p>
-      <p className="text-teal-600 font-semibold">₹{medicine.price}</p>
-      <p
-        className={`font-semibold text-${
-          medicine.availability === "In Stock" ? "green" : "red"
-        }-500`}
-      >
-        {medicine.availability}
-      </p>
-
-      <div className="mt-4 flex gap-3 justify-center">
-        <Link
-          to={`/medicine-details/${medicine.id}`}
-          className="bg-gray-100 content-center text-teal-600 px-3 py-1 rounded-md hover:bg-teal-500 hover:text-white transition"
-        >
-          View Details
-        </Link>
-        <button
-          onClick={handleAddToCart}
-          className="bg-teal-500 text-white px-4 py-2 rounded-md hover:bg-teal-600 transition"
-        >
-          Add to Cart
-        </button>
-      </div>
-    </motion.div>
-  );
-};
-
-const HealthBlog = ({ blog }) => {
-  return (
-    <div className="bg-white shadow-lg rounded-lg p-4 mb-6">
-      <h3 className="text-xl font-bold mb-2">{blog.title}</h3>
-      <p className="text-gray-700">{blog.content}</p>
     </div>
   );
 };

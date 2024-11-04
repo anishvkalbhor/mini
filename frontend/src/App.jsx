@@ -19,9 +19,7 @@ import Cancel from './components/Success';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import OrderHistory from './pages/OrderHistory';
-// import HealthBlog from './pages/HealthBlog';
-const stripePromise = loadStripe('pk_test_51QBKOWP2oQkdeIloanCHIdd8E4XyNwksDammT3HfPWwpkKhsWpFUNCM9YNjq5NHO6aW7z1eMgAcbkd3tnXJ47y3n00KT9afTmk'); // Replace with your publishable key
-
+const stripePromise = loadStripe('pk_test_51QBKOWP2oQkdeIloanCHIdd8E4XyNwksDammT3HfPWwpkKhsWpFUNCM9YNjq5NHO6aW7z1eMgAcbkd3tnXJ47y3n00KT9afTmk'); 
 
 const App = () => {
   return (
@@ -41,9 +39,8 @@ const App = () => {
             <Route path="/webcam" element={<WebcamCapture />} />
             <Route path="/success" component={<Success />} />
             <Route path="/cancel" component={<Cancel />} />
-            <Route path="/orderhistory" component={<OrderHistory />} />
+            <Route path="/orderhistory" element={<OrderHistory />} />
           </Routes>
-          {/* <HealthBlog /> */}
           <Footer />
           <ToastContainer />
         </Router>

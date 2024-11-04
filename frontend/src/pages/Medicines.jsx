@@ -1,17 +1,18 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 import { db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
-import { CartContext } from '../contexts/CartContext'; // Import CartContext
-import { toast } from 'react-toastify'; // Importing toast
-import 'react-toastify/dist/ReactToastify.css'; // Import toastify CSS
+import { CartContext } from '../contexts/CartContext'; 
+import { toast } from 'react-toastify';
 
 const Medicines = () => {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [medicines, setMedicines] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { addToCart } = useContext(CartContext); // Destructure addToCart from context
+  const { addToCart } = useContext(CartContext);
 
   const categories = ['All', 'Pain Relief', 'Vitamins', 'Antacids', 'Cold & Flu', 'Sexual Wellness', 'Fitness Supplements', 'Ayurvedic'];
 
@@ -41,13 +42,9 @@ const Medicines = () => {
     ? medicines 
     : medicines.filter(medicine => medicine.category === selectedCategory);
 
-  if (loading) {
-    return <p>Loading medicines...</p>; // Loading indicator
-  }
-
   const handleAddToCart = (medicine) => {
     addToCart(medicine);
-    toast.success(`${medicine.name} added to cart!`, { autoClose: 2000 }); // Triggering toast notification
+    toast.success(`${medicine.name} added to cart!`, { autoClose: 2000 });
   };
 
   return (
@@ -57,19 +54,8 @@ const Medicines = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
     >
-      {/* Animated Background */}
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-b from-white via-gray-100 to-gray-200 opacity-50"
-        style={{ zIndex: -1 }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
-      />
-
-      {/* Title */}
       <h1 className="text-4xl font-semibold text-center text-teal-700 mb-8">Explore Our Medicines</h1>
       
-      {/* Category Tabs */}
       <div className="flex justify-center mb-8">
         {categories.map(category => (
           <motion.button
@@ -85,40 +71,53 @@ const Medicines = () => {
         ))}
       </div>
 
-      {/* Medicines Section */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        {filteredMedicines.map(medicine => (
-          <motion.div 
-            key={medicine.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <MedicineCard medicine={medicine} onAddToCart={handleAddToCart} />
-          </motion.div>
-        ))}
+        {loading ? (
+          Array.from({ length: 8 }).map((_, index) => (
+            <SkeletonCard key={index} />
+          ))
+        ) : (
+          filteredMedicines.map(medicine => (
+            <motion.div 
+              key={medicine.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <MedicineCard medicine={medicine} onAddToCart={handleAddToCart} />
+            </motion.div>
+          ))
+        )}
       </div>
     </motion.div>
   );
 };
 
-// Medicine Card Component with Framer Motion Hover Effect
+// Skeleton card component for loading state
+const SkeletonCard = () => (
+  <div className="bg-white rounded-lg shadow-md p-6 flex flex-col justify-between items-center">
+    <Skeleton circle={true} height={128} width={128} className="mb-4" />
+    <Skeleton height={20} width={`80%`} className="mb-2" />
+    <Skeleton height={20} width={`60%`} className="mb-2" />
+    <Skeleton height={24} width={`70%`} className="mb-1" />
+    <Skeleton height={24} width={`40%`} className="mb-3" />
+    <div className="flex space-x-4 mt-2">
+      <Skeleton height={36} width={100} />
+      <Skeleton height={36} width={100} />
+    </div>
+  </div>
+);
+
 const MedicineCard = ({ medicine, onAddToCart }) => (
   <motion.div 
     className="bg-white rounded-lg shadow-md p-6 flex flex-col justify-between items-center transition-all"
-    whileHover={{
-      scale: 1.03,
-      transition: { duration: 0.3 },
-    }}
+    whileHover={{ scale: 1.03 }}
   >
     <motion.img
       src={medicine.image}
       alt={medicine.name}
       className="w-32 h-32 mb-4 object-cover rounded-md"
-      whileHover={{
-        scale: 1.1,
-        transition: { duration: 0.3 },
-      }}
+      whileHover={{ scale: 1.1 }}
     />
     <h3 className="text-lg font-semibold text-gray-900 mb-2">{medicine.name}</h3>
     <h4 className="text-sm font-medium text-gray-500 mb-2">{medicine.category}</h4>
@@ -127,21 +126,13 @@ const MedicineCard = ({ medicine, onAddToCart }) => (
       {medicine.availability ? 'In Stock' : 'Out of Stock'}
     </p>
 
-    {/* Button Container for View Details and Add to Cart */}
-    <div className="flex space-x-4 mt-2"> {/* Flex container with spacing */}
-      {/* View Details Button */}
+    <div className="flex space-x-4 mt-2">
       <Link to={`/medicine-details/${medicine.id}`} className="bg-teal-300 text-teal-900 px-4 py-2 rounded-md hover:bg-teal-400 transition">
         View Details
       </Link>
-
       <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
         className={`bg-teal-400 text-white px-4 py-2 rounded-md hover:bg-teal-500 transition ${!medicine.availability ? 'disabled-button' : 'active-button'}`}
-        onClick={() => {
-          onAddToCart(medicine)
-          toast.success("Item out of stock", { autoClose: 2000 });
-        }}
+        onClick={() => onAddToCart(medicine)}
         disabled={!medicine.availability}
       >
         Add to Cart

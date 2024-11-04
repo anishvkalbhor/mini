@@ -6,7 +6,7 @@ import { doc, getDoc, setDoc, addDoc, collection } from 'firebase/firestore';
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const [cart, setCart] = useState([]);
+  const [carts, setCart] = useState([]);
   const { currentUser } = useAuth();
 
   const fetchCartFromFirestore = async (userId) => {
@@ -67,22 +67,23 @@ export const CartProvider = ({ children }) => {
   };
 
   // Save order details to Firebase
-  const addOrder = async (cart, totalAmount) => {
+  const addOrder = async (carts, totalAmount) => {
     if (currentUser) {
       const orderData = {
         userId: currentUser.uid,
-        items: cart,
+        items: carts,
         totalAmount,
         createdAt: new Date().toISOString(),
       };
       try {
-        const ordersCollectionRef = collection(db, 'orders');
-        await addDoc(ordersCollectionRef, orderData);
+        const ordersCollectionRef = collection(db, 'carts');
+        await addDoc(ordersCollectionRef, orderData); // Save order to Firestore
       } catch (error) {
         console.error("Error saving order: ", error);
       }
     }
   };
+  
 
   const clearCart = async () => {
     try {
@@ -102,7 +103,7 @@ export const CartProvider = ({ children }) => {
   }, [currentUser]);
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, updateCartQuantity, removeFromCart, addOrder, clearCart }}>
+    <CartContext.Provider value={{ carts, addToCart, updateCartQuantity, removeFromCart, addOrder, clearCart }}>
       {children}
     </CartContext.Provider>
   );
